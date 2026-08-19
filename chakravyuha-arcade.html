@@ -1,0 +1,1750 @@
+<title>Chakravyuha Arcade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  --paper:#EEF0F6; --surface:#FFFFFF; --surface-2:#F7F8FC;
+  --ink:#12141C; --ink-2:#59607A; --ink-3:#878FA8;
+  --rule:#D2D7E5; --rule-2:#E3E7F1;
+  --accent:#3742D6; --accent-soft:rgba(55,66,214,.09);
+  --ok:#0E8F49; --warn:#9E6A08; --bad:#C22B3C;
+  --ok-bg:rgba(14,143,73,.11); --warn-bg:rgba(158,106,8,.12); --bad-bg:rgba(194,43,60,.10);
+  --shadow:0 1px 2px rgba(18,20,28,.05),0 12px 28px rgba(18,20,28,.06);
+
+  --z1:#E01029; --z2:#F06A00; --z3:#C9A800; --z4:#00A648;
+  --z5:#00A5A0; --z6:#1D5FE0; --z7:#8324D6; --z8:#D6188C;
+
+  --display:"Chakra Petch",ui-sans-serif,system-ui,sans-serif;
+  --body:"IBM Plex Sans",ui-sans-serif,system-ui,-apple-system,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0B0D14; --surface:#141822; --surface-2:#1A1F2C;
+    --ink:#E7EAF4; --ink-2:#98A0B8; --ink-3:#727A94;
+    --rule:#252B3A; --rule-2:#1E2431;
+    --accent:#8590FF; --accent-soft:rgba(133,144,255,.13);
+    --ok:#3ACB80; --warn:#EBA623; --bad:#FF6B7C;
+    --ok-bg:rgba(58,203,128,.13); --warn-bg:rgba(235,166,35,.13); --bad-bg:rgba(255,107,124,.12);
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 34px rgba(0,0,0,.34);
+    --z1:#FF3B4E; --z2:#FF8A2B; --z3:#E8CA2E; --z4:#2FD46E;
+    --z5:#2AD0C8; --z6:#5B8CFF; --z7:#B063FF; --z8:#FF52AE;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0B0D14; --surface:#141822; --surface-2:#1A1F2C;
+  --ink:#E7EAF4; --ink-2:#98A0B8; --ink-3:#727A94;
+  --rule:#252B3A; --rule-2:#1E2431;
+  --accent:#8590FF; --accent-soft:rgba(133,144,255,.13);
+  --ok:#3ACB80; --warn:#EBA623; --bad:#FF6B7C;
+  --ok-bg:rgba(58,203,128,.13); --warn-bg:rgba(235,166,35,.13); --bad-bg:rgba(255,107,124,.12);
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 34px rgba(0,0,0,.34);
+  --z1:#FF3B4E; --z2:#FF8A2B; --z3:#E8CA2E; --z4:#2FD46E;
+  --z5:#2AD0C8; --z6:#5B8CFF; --z7:#B063FF; --z8:#FF52AE;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--body); font-size:16px; line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:var(--display); text-wrap:balance; margin:0; line-height:1.2}
+p{margin:0}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:3px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important; scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+</style>
+<style>
+.shell{max-width:1500px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr);gap:0}
+.rail{display:none;position:sticky;top:0;align-self:start;height:100vh;padding:38px 0 38px 32px;
+  border-right:1px solid var(--rule);overflow-y:auto}
+@media(min-width:1180px){
+  .shell{grid-template-columns:236px minmax(0,1fr);gap:52px;padding-right:32px}
+  .rail{display:block}
+}
+.rail .mark{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.14em;
+  text-transform:uppercase;margin-bottom:22px}
+.rail ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:1px}
+.rail a{display:flex;gap:11px;padding:6px 10px 6px 0;font-size:13.5px;color:var(--ink-2);
+  text-decoration:none;border-left:2px solid transparent;padding-left:12px;transition:.15s}
+.rail a:hover{color:var(--ink)}
+.rail a.on{color:var(--accent);border-left-color:var(--accent);background:var(--accent-soft)}
+.rail a i{font-family:var(--mono);font-style:normal;font-size:11.5px;opacity:.7;padding-top:2px}
+main{min-width:0;padding:38px 24px 96px;max-width:1080px}
+@media(max-width:680px){main{padding:26px 16px 72px}}
+
+.hero{border-bottom:1px solid var(--rule);padding-bottom:34px;margin-bottom:12px}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:16px}
+.hero h1{font-size:clamp(38px,7vw,66px);font-weight:700;letter-spacing:-.015em}
+.hero .lede{margin-top:16px;font-size:clamp(16px,2.2vw,19px);color:var(--ink-2);max-width:62ch}
+.specstrip{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:1px;
+  margin-top:30px;background:var(--rule);border:1px solid var(--rule)}
+.specstrip div{background:var(--surface);padding:13px 15px}
+.specstrip dt{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-3);margin:0}
+.specstrip dd{margin:5px 0 0;font-family:var(--display);font-weight:600;font-size:16px;
+  font-variant-numeric:tabular-nums}
+
+section{padding-top:60px;scroll-margin-top:20px}
+.shead{display:flex;align-items:baseline;gap:14px;border-bottom:2px solid var(--ink);
+  padding-bottom:11px;margin-bottom:26px}
+.shead .num{font-family:var(--mono);font-size:13px;color:var(--accent);font-weight:600}
+.shead h2{font-size:clamp(21px,3.4vw,28px);font-weight:600;letter-spacing:-.01em}
+h3{font-family:var(--display);font-size:17px;font-weight:600;margin:34px 0 12px}
+section > p,.card > p{color:var(--ink-2);max-width:68ch;margin-bottom:14px}
+strong{color:var(--ink);font-weight:600}
+code{font-family:var(--mono);font-size:.88em;background:var(--accent-soft);color:var(--accent);
+  padding:1px 5px;border-radius:3px}
+
+.card{background:var(--surface);border:1px solid var(--rule);box-shadow:var(--shadow);
+  padding:22px;margin:18px 0}
+.grid2{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.note{border-left:3px solid var(--accent);background:var(--accent-soft);padding:14px 18px;margin:18px 0;
+  font-size:14.5px;color:var(--ink-2)}
+.note.warn{border-left-color:var(--warn);background:var(--warn-bg)}
+.note.warn strong,.note strong{color:var(--ink)}
+</style>
+<style>
+.tw{overflow-x:auto;border:1px solid var(--rule);background:var(--surface);margin:18px 0;
+  box-shadow:var(--shadow)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:14px}
+caption{caption-side:top;text-align:left;font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--ink-3);padding:13px 16px 0}
+th{text-align:left;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:600;padding:13px 16px;border-bottom:1px solid var(--rule);
+  background:var(--surface-2);white-space:nowrap}
+td{padding:11px 16px;border-bottom:1px solid var(--rule-2);vertical-align:top;
+  font-variant-numeric:tabular-nums;color:var(--ink-2)}
+td:first-child{color:var(--ink);font-weight:500}
+tbody tr:last-child td{border-bottom:0}
+.pin{font-family:var(--mono);font-weight:600;color:var(--accent)!important;white-space:nowrap}
+.mono{font-family:var(--mono);font-size:13px}
+.swatch{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;
+  vertical-align:-1px;flex:none}
+.tag{display:inline-block;font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:3px;
+  letter-spacing:.04em}
+.tag.ok{background:var(--ok-bg);color:var(--ok)}
+.tag.warn{background:var(--warn-bg);color:var(--warn)}
+.tag.bad{background:var(--bad-bg);color:var(--bad)}
+
+figure{margin:26px 0;background:var(--surface);border:1px solid var(--rule);box-shadow:var(--shadow);
+  padding:22px 22px 0}
+figure .svgbox{overflow-x:auto}
+figure svg{display:block;width:100%;height:auto;max-width:100%;color:var(--ink)}
+figcaption{border-top:1px solid var(--rule-2);margin-top:16px;padding:13px 0;font-size:13.5px;
+  color:var(--ink-2)}
+figcaption b{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-3);display:block;margin-bottom:4px;font-weight:600}
+.sv-box{fill:var(--surface-2);stroke:currentColor;stroke-width:1.5}
+.sv-line{stroke:currentColor;stroke-width:1.5;fill:none}
+.sv-pow{stroke:var(--warn);stroke-width:1.5;fill:none;stroke-dasharray:6 4}
+.sv-acc{stroke:var(--accent);stroke-width:2;fill:none}
+.sv-t{font-family:var(--mono);font-size:12px;fill:currentColor}
+.sv-tb{font-family:var(--display);font-size:14px;font-weight:600;fill:currentColor}
+.sv-ts{font-family:var(--mono);font-size:11px;fill:var(--ink-3)}
+.sv-ta{font-family:var(--mono);font-size:11px;fill:var(--accent)}
+.sv-tw{font-family:var(--mono);font-size:11px;fill:var(--warn)}
+
+.codehead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+  background:var(--surface-2);border:1px solid var(--rule);border-bottom:0;padding:10px 16px;margin-top:20px}
+.codehead .fn{font-family:var(--mono);font-size:12.5px;color:var(--ink-2)}
+.codehead button{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-2);background:var(--surface);border:1px solid var(--rule);padding:6px 13px;
+  cursor:pointer;transition:.15s}
+.codehead button:hover{border-color:var(--accent);color:var(--accent)}
+pre{margin:0;background:var(--surface);border:1px solid var(--rule);overflow:auto;max-height:640px;
+  padding:18px;box-shadow:var(--shadow)}
+pre code{font-family:var(--mono);font-size:12.5px;line-height:1.62;background:none;color:var(--ink-2);
+  padding:0;white-space:pre;display:block}
+footer{border-top:1px solid var(--rule);margin-top:72px;padding-top:26px;font-size:13px;color:var(--ink-3)}
+footer .mono{color:var(--ink-3)}
+</style>
+<div class="shell">
+<nav class="rail" aria-label="Build sections">
+  <div class="mark">Chakravyuha</div>
+  <ol>
+    <li><a href="#s1"><i>01</i>System overview</a></li>
+    <li><a href="#s2"><i>02</i>Pinout &amp; wiring table</a></li>
+    <li><a href="#s3"><i>03</i>Wiring diagrams</a></li>
+    <li><a href="#s4"><i>04</i>Theory of operation</a></li>
+    <li><a href="#s5"><i>05</i>Firmware source</a></li>
+    <li><a href="#s6"><i>06</i>Dashboard &amp; API</a></li>
+    <li><a href="#s7"><i>07</i>Build &amp; flash</a></li>
+    <li><a href="#s8"><i>08</i>Bring-up &amp; faults</a></li>
+  </ol>
+</nav>
+
+<main>
+<header class="hero">
+  <div class="eyebrow">Arcade Build Reference &middot; Rev A</div>
+  <h1>Chakravyuha Arcade</h1>
+  <p class="lede">A pattern-recognition and reaction-time cabinet built on one ESP32: twenty-four
+  microswitches collapsed into eight illuminated zones, a sixteen-pixel ring that speaks in
+  two-LED arcs, and a self-hosted telemetry dashboard served straight out of flash.</p>
+  <dl class="specstrip">
+    <div><dt>Controller</dt><dd>ESP32-WROOM-32</dd></div>
+    <div><dt>Switches</dt><dd>24 &rarr; 8 zones</dd></div>
+    <div><dt>Ring</dt><dd>16 &times; WS2812B</dd></div>
+    <div><dt>Audio</dt><dd>2N2222 + LEDC</dd></div>
+    <div><dt>Network</dt><dd>SoftAP :80</dd></div>
+    <div><dt>Loop</dt><dd>Non-blocking</dd></div>
+  </dl>
+</header>
+
+<section id="s1">
+  <div class="shead"><span class="num">01</span><h2>System overview</h2></div>
+  <p>Every subsystem is driven from a single <code>loop()</code> that never blocks. HTTP requests,
+  switch debouncing, the game state machine, the audio queue and the ring refresh each get one
+  slice per pass, so the dashboard stays responsive at 4&nbsp;Hz polling even while a pattern is
+  playing back.</p>
+  <figure>
+   <div class="svgbox">
+    <svg viewBox="0 0 940 470" role="img" aria-label="Block diagram: 8 switch zones feed the ESP32 over GPIO, which drives a WS2812B ring and a transistor speaker driver, while a 5 volt supply feeds all three and a browser reaches the ESP32 over its own Wi-Fi access point.">
+      <defs>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 0 L10 5 L0 10 z" fill="currentColor"/>
+        </marker>
+        <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 0 L10 5 L0 10 z" fill="var(--warn)"/>
+        </marker>
+        <marker id="ara" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 0 L10 5 L0 10 z" fill="var(--accent)"/>
+        </marker>
+      </defs>
+
+      <rect class="sv-box" x="360" y="26" width="210" height="58"/>
+      <text class="sv-tb" x="465" y="50" text-anchor="middle">5 V / 2 A supply</text>
+      <text class="sv-ts" x="465" y="70" text-anchor="middle">star ground, 1000 uF at ring</text>
+
+      <rect class="sv-box" x="40" y="176" width="212" height="118"/>
+      <text class="sv-tb" x="146" y="206" text-anchor="middle">8 zone clusters</text>
+      <text class="sv-ts" x="146" y="228" text-anchor="middle">24 microswitches total</text>
+      <text class="sv-ts" x="146" y="246" text-anchor="middle">3 in parallel per zone</text>
+      <text class="sv-ts" x="146" y="272" text-anchor="middle">NO to GPIO, COM to GND</text>
+
+      <rect class="sv-box" x="366" y="164" width="198" height="142"/>
+      <text class="sv-tb" x="465" y="196" text-anchor="middle">ESP32-WROOM-32</text>
+      <text class="sv-ts" x="465" y="218" text-anchor="middle">single non-blocking loop</text>
+      <line class="sv-line" x1="386" y1="234" x2="544" y2="234" stroke-opacity=".35"/>
+      <text class="sv-ts" x="465" y="254" text-anchor="middle">FSM &middot; debounce &middot; audio</text>
+      <text class="sv-ts" x="465" y="272" text-anchor="middle">NeoPixel &middot; WebServer</text>
+      <text class="sv-ts" x="465" y="292" text-anchor="middle">no delay() after boot</text>
+
+      <rect class="sv-box" x="690" y="112" width="212" height="82"/>
+      <text class="sv-tb" x="796" y="142" text-anchor="middle">WS2812B ring</text>
+      <text class="sv-ts" x="796" y="164" text-anchor="middle">16 px = 8 arcs of 2</text>
+      <text class="sv-ts" x="796" y="182" text-anchor="middle">brightness capped 70/255</text>
+
+      <rect class="sv-box" x="690" y="284" width="212" height="82"/>
+      <text class="sv-tb" x="796" y="314" text-anchor="middle">2N2222 + speaker</text>
+      <text class="sv-ts" x="796" y="336" text-anchor="middle">low-side switch, 1k base</text>
+      <text class="sv-ts" x="796" y="354" text-anchor="middle">flyback 1N4148</text>
+
+      <rect class="sv-box" x="366" y="392" width="198" height="58"/>
+      <text class="sv-tb" x="465" y="416" text-anchor="middle">Phone / laptop</text>
+      <text class="sv-ts" x="465" y="436" text-anchor="middle">any browser, no app</text>
+
+      <line class="sv-line" x1="252" y1="235" x2="360" y2="235" marker-end="url(#ar)"/>
+      <text class="sv-t"  x="306" y="222" text-anchor="middle">8x GPIO</text>
+      <text class="sv-ts" x="306" y="256" text-anchor="middle">active LOW</text>
+
+      <path class="sv-line" d="M564 200 H628 V153 H684" marker-end="url(#ar)"/>
+      <text class="sv-t"  x="632" y="142" text-anchor="middle">GPIO4</text>
+      <text class="sv-ts" x="636" y="190" text-anchor="middle">800 kHz serial</text>
+
+      <path class="sv-line" d="M564 272 H628 V325 H684" marker-end="url(#ar)"/>
+      <text class="sv-t"  x="632" y="356" text-anchor="middle">GPIO25</text>
+      <text class="sv-ts" x="637" y="304" text-anchor="middle">LEDC PWM</text>
+
+      <line class="sv-pow" x1="465" y1="84" x2="465" y2="158" marker-end="url(#arw)"/>
+      <text class="sv-tw" x="475" y="126">5 V to VIN</text>
+      <path class="sv-pow" d="M570 55 H796 V106" marker-end="url(#arw)"/>
+      <path class="sv-pow" d="M796 55 H920 V325 H908" marker-end="url(#arw)"/>
+      <text class="sv-tw" x="912" y="200" text-anchor="end">5 V rail</text>
+
+      <line class="sv-acc" x1="465" y1="306" x2="465" y2="386" marker-end="url(#ara)" marker-start="url(#ara)"/>
+      <text class="sv-ta" x="477" y="340">Wi-Fi SoftAP</text>
+      <text class="sv-ta" x="477" y="360">HTTP :80, poll 4 Hz</text>
+    </svg>
+   </div>
+   <figcaption><b>Figure 1 &middot; Signal and power topology</b>
+   Solid lines are logic, dashed amber is the 5 V rail, indigo is the wireless link. The ESP32 is the
+   only active part: nothing between the switches and the ring has its own logic.</figcaption>
+  </figure>
+</section>
+<section id="s2">
+  <div class="shead"><span class="num">02</span><h2>Pinout &amp; wiring table</h2></div>
+  <p>Pin choice is constrained, not arbitrary. GPIO&nbsp;6&ndash;11 carry the SPI flash and GPIO&nbsp;34&ndash;39
+  are input-only with <strong>no internal pull-ups</strong>, so they cannot serve as
+  <code>INPUT_PULLUP</code> zones at all. The four strapping pins (0, 2, 12, 15) are deliberately left
+  empty so a jammed switch can never hold the board out of its boot mode.</p>
+
+  <div class="tw">
+  <table>
+    <caption>2.1 &mdash; Player inputs, 8 logical zones / 24 switches</caption>
+    <thead><tr><th>Zone</th><th>Index</th><th>GPIO</th><th>Header</th><th>Wiring</th><th>Idle / pressed</th><th>Ring LEDs</th><th>Tone</th></tr></thead>
+    <tbody>
+      <tr><td><span class="swatch" style="background:var(--z1)"></span>Z1</td><td class="mono">0</td><td class="pin">GPIO13</td><td class="mono">D13</td><td>3&times; NO bussed to pin, 3&times; COM to GND</td><td class="mono">HIGH / LOW</td><td class="mono">0, 1</td><td class="mono">262 Hz</td></tr>
+      <tr><td><span class="swatch" style="background:var(--z2)"></span>Z2</td><td class="mono">1</td><td class="pin">GPIO14</td><td class="mono">D14</td><td>3&times; NO bussed to pin, 3&times; COM to GND</td><td class="mono">HIGH / LOW</td><td class="mono">2, 3</td><td class="mono">294 Hz</td></tr>
+      <tr><td><span class="swatch" style="background:var(--z3)"></span>Z3</td><td class="mono">2</td><td class="pin">GPIO16</td><td class="mono">RX2</td><td>3&times; NO bussed to pin, 3&times; COM to GND</td><td class="mono">HIGH / LOW</td><td class="mono">4, 5</td><td class="mono">330 Hz</td></tr>
+      <tr><td><span class="swatch" style="background:var(--z4)"></span>Z4</td><td class="mono">3</td><td class="pin">GPIO17</td><td class="mono">TX2</td><td>3&times; NO bussed to pin, 3&times; COM to GND</td><td class="mono">HIGH / LOW</td><td class="mono">6, 7</td><td class="mono">392 Hz</td></tr>
+      <tr><td><span class="swatch" style="background:var(--z5)"></span>Z5</td><td class="mono">4</td><td class="pin">GPIO18</td><td class="mono">D18</td><td>3&times; NO bussed to pin, 3&times; COM to GND</td><td class="mono">HIGH / LOW</td><td class="mono">8, 9</td><td class="mono">440 Hz</td></tr>
+      <tr><td><span class="swatch" style="background:var(--z6)"></span>Z6</td><td class="mono">5</td><td class="pin">GPIO19</td><td class="mono">D19</td><td>3&times; NO bussed to pin, 3&times; COM to GND</td><td class="mono">HIGH / LOW</td><td class="mono">10, 11</td><td class="mono">523 Hz</td></tr>
+      <tr><td><span class="swatch" style="background:var(--z7)"></span>Z7</td><td class="mono">6</td><td class="pin">GPIO21</td><td class="mono">D21</td><td>3&times; NO bussed to pin, 3&times; COM to GND</td><td class="mono">HIGH / LOW</td><td class="mono">12, 13</td><td class="mono">587 Hz</td></tr>
+      <tr><td><span class="swatch" style="background:var(--z8)"></span>Z8</td><td class="mono">7</td><td class="pin">GPIO22</td><td class="mono">D22</td><td>3&times; NO bussed to pin, 3&times; COM to GND</td><td class="mono">HIGH / LOW</td><td class="mono">14, 15</td><td class="mono">659 Hz</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="tw">
+  <table>
+    <caption>2.2 &mdash; Output peripherals</caption>
+    <thead><tr><th>Function</th><th>GPIO</th><th>Goes to</th><th>Series part</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td>WS2812B data</td><td class="pin">GPIO4</td><td>Ring <span class="mono">DIN</span></td><td class="mono">390 &Omega;</td><td>Damps the rising edge; fit it at the ESP32 end, not the ring end</td></tr>
+      <tr><td>Speaker drive</td><td class="pin">GPIO25</td><td>2N2222 base</td><td class="mono">1 k&Omega;</td><td>Limits base current to ~2.5 mA, well inside the GPIO budget</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="tw">
+  <table>
+    <caption>2.3 &mdash; Power and ground rails</caption>
+    <thead><tr><th>Rail</th><th>Source</th><th>Feeds</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>+5 V</td><td>External 5 V / 2 A</td><td>ESP32 <span class="mono">VIN</span>, ring <span class="mono">5V</span>, speaker high side</td><td>USB alone will brown out under LED load</td></tr>
+      <tr><td>GND</td><td>Supply ground</td><td>ESP32 GND, ring GND, all 24 switch COMs, transistor emitter</td><td><span class="tag bad">mandatory</span> one star point, no daisy chains</td></tr>
+      <tr><td>3V3</td><td>On-board regulator</td><td>Optional external pull-ups only</td><td>Needed only past ~50 cm of harness</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="tw">
+  <table>
+    <caption>2.4 &mdash; Passive bill of materials</caption>
+    <thead><tr><th>Qty</th><th>Part</th><th>Placement</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">24</td><td>Tactile microswitch, NO + COM</td><td>3 per zone cover, wired in parallel</td><td><span class="tag ok">required</span></td></tr>
+      <tr><td class="mono">1</td><td>1000 uF / 10 V electrolytic</td><td>Across ring 5V&ndash;GND, physically at the ring</td><td><span class="tag ok">required</span></td></tr>
+      <tr><td class="mono">1</td><td>390 &Omega; resistor</td><td>GPIO4 to ring DIN</td><td><span class="tag ok">required</span></td></tr>
+      <tr><td class="mono">1</td><td>1 k&Omega; resistor</td><td>GPIO25 to 2N2222 base</td><td><span class="tag ok">required</span></td></tr>
+      <tr><td class="mono">1</td><td>2N2222 NPN, TO-92</td><td>Speaker low-side switch</td><td><span class="tag ok">required</span></td></tr>
+      <tr><td class="mono">1</td><td>1N4148 diode</td><td>Across speaker, cathode to +5 V</td><td><span class="tag ok">required</span></td></tr>
+      <tr><td class="mono">1</td><td>100 &Omega; / 0.5 W resistor</td><td>In series with an 8 &Omega; speaker</td><td><span class="tag warn">omit for piezo</span></td></tr>
+      <tr><td class="mono">8</td><td>10 k&Omega; resistor</td><td>GPIO to 3V3, external pull-up</td><td><span class="tag warn">long harness only</span></td></tr>
+      <tr><td class="mono">8</td><td>100 nF ceramic</td><td>GPIO to GND, RC noise filter</td><td><span class="tag warn">long harness only</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+<section id="s3">
+  <div class="shead"><span class="num">03</span><h2>Wiring diagrams</h2></div>
+  <p>Three details carry the whole build: how three switches become one input, how a 12&nbsp;mA GPIO
+  drives a speaker, and which two pixels belong to which zone.</p>
+
+  <h3>3.1 &nbsp;Parallel switch cluster &mdash; three switches, one zone</h3>
+  <figure>
+   <div class="svgbox">
+    <svg viewBox="0 0 880 392" role="img" aria-label="Schematic of one zone: the ESP32 internal pull-up holds the GPIO high, and three normally-open switches wired in parallel each connect that GPIO line to the shared ground bus, so closing any one of them pulls the pin low.">
+      <rect x="40" y="30" width="238" height="232" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="5 4" stroke-opacity=".45"/>
+      <text class="sv-ts" x="52" y="50">inside the ESP32</text>
+
+      <text class="sv-t" x="159" y="80" text-anchor="middle">3.3 V</text>
+      <line class="sv-line" x1="159" y1="90" x2="159" y2="118"/>
+      <polyline class="sv-line" points="159,118 145,126 173,138 145,150 173,162 145,174 159,182"/>
+      <text class="sv-ts" x="186" y="154">45 k&Omega; nominal</text>
+      <line class="sv-line" x1="159" y1="182" x2="159" y2="230"/>
+      <circle cx="159" cy="230" r="4" fill="currentColor"/>
+      <line class="sv-line" x1="159" y1="230" x2="820" y2="230"/>
+      <text class="sv-ta" x="300" y="219">GPIO13</text>
+      <text class="sv-ts" x="620" y="219">NO bus &mdash; a single wire leaves the cluster</text>
+
+      <line class="sv-line" x1="330" y1="330" x2="820" y2="330"/>
+      <text class="sv-ts" x="620" y="352">COM bus &mdash; a single wire to the star ground</text>
+
+      <line class="sv-line" x1="366" y1="330" x2="366" y2="344"/>
+      <line class="sv-line" x1="352" y1="344" x2="380" y2="344"/>
+      <line class="sv-line" x1="357" y1="352" x2="375" y2="352"/>
+      <line class="sv-line" x1="362" y1="360" x2="370" y2="360"/>
+
+      <line class="sv-line" x1="450" y1="230" x2="450" y2="258"/>
+      <circle cx="450" cy="258" r="4" fill="currentColor"/>
+      <line class="sv-line" x1="450" y1="258" x2="478" y2="286"/>
+      <circle cx="450" cy="302" r="4" fill="currentColor"/>
+      <line class="sv-line" x1="450" y1="302" x2="450" y2="330"/>
+      <text class="sv-t" x="492" y="286">SW1-A</text>
+
+      <line class="sv-line" x1="590" y1="230" x2="590" y2="258"/>
+      <circle cx="590" cy="258" r="4" fill="currentColor"/>
+      <line class="sv-line" x1="590" y1="258" x2="618" y2="286"/>
+      <circle cx="590" cy="302" r="4" fill="currentColor"/>
+      <line class="sv-line" x1="590" y1="302" x2="590" y2="330"/>
+      <text class="sv-t" x="632" y="286">SW1-B</text>
+
+      <line class="sv-line" x1="730" y1="230" x2="730" y2="258"/>
+      <circle cx="730" cy="258" r="4" fill="currentColor"/>
+      <line class="sv-line" x1="730" y1="258" x2="758" y2="286"/>
+      <circle cx="730" cy="302" r="4" fill="currentColor"/>
+      <line class="sv-line" x1="730" y1="302" x2="730" y2="330"/>
+      <text class="sv-t" x="772" y="286">SW1-C</text>
+
+      <text class="sv-t"  x="40" y="300">idle</text>
+      <text class="sv-ts" x="40" y="320">all open, pull-up wins</text>
+      <text class="sv-ta" x="40" y="340">reads HIGH</text>
+    </svg>
+   </div>
+   <figcaption><b>Figure 2 &middot; One zone of eight</b>
+   All three NO terminals share one wire to the GPIO and all three COM terminals share one wire to
+   ground, so any single switch closing pulls the pin low &mdash; a press anywhere under the cover
+   registers. Repeat identically on GPIO 14, 16, 17, 18, 19, 21 and 22.</figcaption>
+  </figure>
+</section>
+<section>
+  <h3>3.2 &nbsp;Speaker driver &mdash; 2N2222 low-side switch</h3>
+  <figure>
+   <div class="svgbox">
+    <svg viewBox="0 0 640 412" role="img" aria-label="Schematic of the audio driver: GPIO25 feeds the 2N2222 base through a 1 kilohm resistor, the speaker and its series resistor hang from the 5 volt rail down to the collector, a flyback diode sits across the speaker, and the emitter returns to ground.">
+      <line class="sv-line" x1="200" y1="46" x2="520" y2="46"/>
+      <text class="sv-tw" x="192" y="50" text-anchor="end">+5 V</text>
+
+      <line class="sv-line" x1="318" y1="46" x2="318" y2="86"/>
+      <rect class="sv-box" x="278" y="86" width="80" height="54"/>
+      <text class="sv-t" x="318" y="118" text-anchor="middle">SPKR</text>
+      <line class="sv-line" x1="318" y1="140" x2="318" y2="158"/>
+      <circle cx="318" cy="158" r="4" fill="currentColor"/>
+      <line class="sv-line" x1="318" y1="158" x2="318" y2="176"/>
+      <polyline class="sv-line" points="318,176 304,184 332,196 304,208 332,220 304,232 318,240"/>
+      <text class="sv-ts" x="344" y="212">100 &Omega; (8 &Omega; spkr only)</text>
+      <line class="sv-line" x1="318" y1="240" x2="318" y2="274"/>
+
+      <line class="sv-line" x1="470" y1="46" x2="470" y2="104"/>
+      <line class="sv-line" x1="452" y1="104" x2="488" y2="104"/>
+      <polygon points="470,104 486,134 454,134" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <line class="sv-line" x1="470" y1="134" x2="470" y2="158"/>
+      <line class="sv-line" x1="470" y1="158" x2="318" y2="158"/>
+      <text class="sv-ts" x="496" y="126">1N4148</text>
+      <text class="sv-ts" x="496" y="144">band to +5 V</text>
+
+      <circle cx="318" cy="310" r="42" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <line class="sv-line" x1="296" y1="288" x2="296" y2="332"/>
+      <line class="sv-line" x1="296" y1="298" x2="318" y2="274"/>
+      <line class="sv-line" x1="296" y1="322" x2="318" y2="348"/>
+      <polygon points="318,348 305,340 310,332" fill="currentColor"/>
+      <line class="sv-line" x1="318" y1="348" x2="318" y2="372"/>
+      <text class="sv-ts" x="330" y="278">C</text>
+      <text class="sv-ts" x="278" y="286">B</text>
+      <text class="sv-ts" x="330" y="356">E</text>
+      <text class="sv-t"  x="372" y="314">2N2222</text>
+      <text class="sv-ts" x="372" y="332">TO-92: E B C</text>
+
+      <line class="sv-line" x1="150" y1="310" x2="296" y2="310"/>
+      <polyline class="sv-line" points="176,310 184,296 196,324 208,296 220,324 232,296 240,310"/>
+      <text class="sv-ta" x="208" y="286" text-anchor="middle">1 k&Omega;</text>
+      <text class="sv-ta" x="144" y="314" text-anchor="end">GPIO25</text>
+
+      <line class="sv-line" x1="304" y1="372" x2="332" y2="372"/>
+      <line class="sv-line" x1="309" y1="380" x2="327" y2="380"/>
+      <line class="sv-line" x1="314" y1="388" x2="322" y2="388"/>
+      <text class="sv-ts" x="344" y="378">star ground</text>
+    </svg>
+   </div>
+   <figcaption><b>Figure 3 &middot; Audio output stage</b>
+   The transistor switches the speaker's ground path while the coil stays tied to +5 V, so the GPIO
+   only ever sources base current. The diode gives the coil's collapsing field somewhere to go
+   instead of punching through the transistor.</figcaption>
+  </figure>
+
+  <div class="note warn"><strong>Do not drive the speaker straight from a pin.</strong>
+  An ESP32 GPIO is rated for roughly 12 mA continuous; an 8 &Omega; speaker across 5 V wants over
+  600 mA. The 1 k&Omega; base resistor keeps the pin at about 2.5 mA and the transistor carries the
+  rest. Use a piezo instead and you can drop the 100 &Omega; series resistor.</div>
+</section>
+<section>
+  <h3>3.3 &nbsp;Ring map &mdash; which pixels belong to which zone</h3>
+  <figure>
+   <div class="svgbox">
+    <svg viewBox="0 36 570 500" role="img" aria-label="Map of the 16-pixel WS2812B ring: data enters at pixel 0 at the top and runs clockwise, and each consecutive pair of pixels forms one zone arc, from zone 1 on GPIO13 through zone 8 on GPIO22.">
+      <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="var(--accent)"/></marker></defs>
+      <line class="sv-acc" x1="280" y1="48" x2="280" y2="82" marker-end="url(#arr)"/>
+      <text class="sv-ta" x="268" y="62" text-anchor="end">DIN from GPIO4</text>
+
+      <path d="M280 102 A178 178 0 0 1 348.1 115.6" fill="none" stroke="var(--z1)" stroke-width="11" stroke-opacity=".32"/>
+      <path d="M405.9 154.1 A178 178 0 0 1 444.4 211.9" fill="none" stroke="var(--z2)" stroke-width="11" stroke-opacity=".32"/>
+      <path d="M458 280 A178 178 0 0 1 444.4 348.1" fill="none" stroke="var(--z3)" stroke-width="11" stroke-opacity=".32"/>
+      <path d="M405.9 405.9 A178 178 0 0 1 348.1 444.4" fill="none" stroke="var(--z4)" stroke-width="11" stroke-opacity=".32"/>
+      <path d="M280 458 A178 178 0 0 1 211.9 444.4" fill="none" stroke="var(--z5)" stroke-width="11" stroke-opacity=".32"/>
+      <path d="M154.1 405.9 A178 178 0 0 1 115.6 348.1" fill="none" stroke="var(--z6)" stroke-width="11" stroke-opacity=".32"/>
+      <path d="M102 280 A178 178 0 0 1 115.6 211.9" fill="none" stroke="var(--z7)" stroke-width="11" stroke-opacity=".32"/>
+      <path d="M154.1 154.1 A178 178 0 0 1 211.9 115.6" fill="none" stroke="var(--z8)" stroke-width="11" stroke-opacity=".32"/>
+
+      <g stroke-width="2.5" fill="none">
+        <circle cx="280"   cy="102"   r="13" stroke="var(--z1)"/><circle cx="348.1" cy="115.6" r="13" stroke="var(--z1)"/>
+        <circle cx="405.9" cy="154.1" r="13" stroke="var(--z2)"/><circle cx="444.4" cy="211.9" r="13" stroke="var(--z2)"/>
+        <circle cx="458"   cy="280"   r="13" stroke="var(--z3)"/><circle cx="444.4" cy="348.1" r="13" stroke="var(--z3)"/>
+        <circle cx="405.9" cy="405.9" r="13" stroke="var(--z4)"/><circle cx="348.1" cy="444.4" r="13" stroke="var(--z4)"/>
+        <circle cx="280"   cy="458"   r="13" stroke="var(--z5)"/><circle cx="211.9" cy="444.4" r="13" stroke="var(--z5)"/>
+        <circle cx="154.1" cy="405.9" r="13" stroke="var(--z6)"/><circle cx="115.6" cy="348.1" r="13" stroke="var(--z6)"/>
+        <circle cx="102"   cy="280"   r="13" stroke="var(--z7)"/><circle cx="115.6" cy="211.9" r="13" stroke="var(--z7)"/>
+        <circle cx="154.1" cy="154.1" r="13" stroke="var(--z8)"/><circle cx="211.9" cy="115.6" r="13" stroke="var(--z8)"/>
+      </g>
+      <g stroke="none">
+        <circle cx="280"   cy="102"   r="6" fill="var(--z1)"/><circle cx="348.1" cy="115.6" r="6" fill="var(--z1)"/>
+        <circle cx="405.9" cy="154.1" r="6" fill="var(--z2)"/><circle cx="444.4" cy="211.9" r="6" fill="var(--z2)"/>
+        <circle cx="458"   cy="280"   r="6" fill="var(--z3)"/><circle cx="444.4" cy="348.1" r="6" fill="var(--z3)"/>
+        <circle cx="405.9" cy="405.9" r="6" fill="var(--z4)"/><circle cx="348.1" cy="444.4" r="6" fill="var(--z4)"/>
+        <circle cx="280"   cy="458"   r="6" fill="var(--z5)"/><circle cx="211.9" cy="444.4" r="6" fill="var(--z5)"/>
+        <circle cx="154.1" cy="405.9" r="6" fill="var(--z6)"/><circle cx="115.6" cy="348.1" r="6" fill="var(--z6)"/>
+        <circle cx="102"   cy="280"   r="6" fill="var(--z7)"/><circle cx="115.6" cy="211.9" r="6" fill="var(--z7)"/>
+        <circle cx="154.1" cy="154.1" r="6" fill="var(--z8)"/><circle cx="211.9" cy="115.6" r="6" fill="var(--z8)"/>
+      </g>
+      <g class="sv-ts" text-anchor="middle" dominant-baseline="middle">
+        <text x="280" y="134">0</text><text x="335.9" y="145.1">1</text>
+        <text x="383.2" y="176.8">2</text><text x="414.9" y="224.1">3</text>
+        <text x="426" y="280">4</text><text x="414.9" y="335.9">5</text>
+        <text x="383.2" y="383.2">6</text><text x="335.9" y="414.9">7</text>
+        <text x="280" y="426">8</text><text x="224.1" y="414.9">9</text>
+        <text x="176.8" y="383.2">10</text><text x="145.1" y="335.9">11</text>
+        <text x="134" y="280">12</text><text x="145.1" y="224.1">13</text>
+        <text x="176.8" y="176.8">14</text><text x="224.1" y="145.1">15</text>
+      </g>
+      <g class="sv-t" text-anchor="middle">
+        <text x="324.5" y="56">Z1</text><text class="sv-ts" x="324.5" y="72">GPIO13</text>
+        <text x="406.7" y="470">Z4</text><text class="sv-ts" x="406.7" y="486">GPIO17</text>
+        <text x="235.5" y="504">Z5</text><text class="sv-ts" x="235.5" y="520">GPIO18</text>
+        <text x="153.3" y="90">Z8</text><text class="sv-ts" x="153.3" y="106">GPIO22</text>
+      </g>
+      <g class="sv-t" text-anchor="start">
+        <text x="469.6" y="149">Z2</text><text class="sv-ts" x="469.6" y="165">GPIO14</text>
+        <text x="503.6" y="320">Z3</text><text class="sv-ts" x="503.6" y="336">GPIO16</text>
+      </g>
+      <g class="sv-t" text-anchor="end">
+        <text x="90.4" y="403">Z6</text><text class="sv-ts" x="90.4" y="419">GPIO19</text>
+        <text x="56.4" y="231">Z7</text><text class="sv-ts" x="56.4" y="247">GPIO21</text>
+      </g>
+      <text class="sv-tb" x="280" y="272" text-anchor="middle">16 &times; WS2812B</text>
+      <text class="sv-ts" x="280" y="296" text-anchor="middle">LEDs 2z and 2z+1 belong to zone z</text>
+    </svg>
+   </div>
+   <figcaption><b>Figure 4 &middot; Pixel-to-zone mapping</b>
+   Data enters at pixel 0 and propagates clockwise through the chain. Zone <em>z</em> owns pixels
+   <span class="mono">2z</span> and <span class="mono">2z+1</span>, which is why the firmware can light
+   an arc with two <span class="mono">setPixelColor</span> calls and no lookup table.</figcaption>
+  </figure>
+</section>
+<section id="s4">
+  <div class="shead"><span class="num">04</span><h2>Theory of operation</h2></div>
+  <p>Five states, one transition table. The round timer starts the instant playback ends, so what the
+  dashboard reports is the player's reaction time and nothing else &mdash; no animation time is folded
+  into the measurement.</p>
+
+  <figure>
+   <div class="svgbox">
+    <svg viewBox="0 0 940 430" role="img" aria-label="State machine: idle advances to pattern show on any press, pattern show advances to user input when playback ends and the timer starts, user input branches to success on a full correct sequence or to failure on a wrong zone or timeout, success returns to pattern show with the sequence one step longer, and failure returns to idle after resetting to the base length.">
+      <defs>
+        <marker id="fs" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 0 L10 5 L0 10 z" fill="currentColor"/>
+        </marker>
+        <marker id="fsg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 0 L10 5 L0 10 z" fill="var(--ok)"/>
+        </marker>
+        <marker id="fsb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 0 L10 5 L0 10 z" fill="var(--bad)"/>
+        </marker>
+      </defs>
+
+      <rect class="sv-box" x="28" y="188" width="158" height="66"/>
+      <text class="sv-tb" x="107" y="216" text-anchor="middle">IDLE</text>
+      <text class="sv-ts" x="107" y="236" text-anchor="middle">rainbow sweep</text>
+
+      <rect class="sv-box" x="256" y="188" width="176" height="66"/>
+      <text class="sv-tb" x="344" y="216" text-anchor="middle">PATTERN_SHOW</text>
+      <text class="sv-ts" x="344" y="236" text-anchor="middle">arc + tone per step</text>
+
+      <rect class="sv-box" x="502" y="188" width="164" height="66"/>
+      <text class="sv-tb" x="584" y="216" text-anchor="middle">USER_INPUT</text>
+      <text class="sv-ts" x="584" y="236" text-anchor="middle">millis() running</text>
+
+      <rect x="746" y="70" width="166" height="66" fill="var(--ok-bg)" stroke="var(--ok)" stroke-width="1.5"/>
+      <text class="sv-tb" x="829" y="98" text-anchor="middle" fill="var(--ok)">SUCCESS</text>
+      <text class="sv-ts" x="829" y="118" text-anchor="middle">chime + green sweep</text>
+
+      <rect x="746" y="306" width="166" height="66" fill="var(--bad-bg)" stroke="var(--bad)" stroke-width="1.5"/>
+      <text class="sv-tb" x="829" y="334" text-anchor="middle" fill="var(--bad)">FAILURE</text>
+      <text class="sv-ts" x="829" y="354" text-anchor="middle">chime + red flash</text>
+
+      <line class="sv-line" x1="186" y1="221" x2="250" y2="221" marker-end="url(#fs)"/>
+      <text class="sv-ts" x="218" y="208" text-anchor="middle">any press</text>
+
+      <line class="sv-line" x1="432" y1="221" x2="496" y2="221" marker-end="url(#fs)"/>
+      <text class="sv-ts" x="464" y="200" text-anchor="middle">playback</text>
+      <text class="sv-ts" x="464" y="245" text-anchor="middle">timer starts</text>
+
+      <path d="M666 206 H706 V103 H740" fill="none" stroke="var(--ok)" stroke-width="1.5" marker-end="url(#fsg)"/>
+      <text class="sv-ts" x="712" y="164" fill="var(--ok)">all correct</text>
+
+      <path d="M666 238 H706 V339 H740" fill="none" stroke="var(--bad)" stroke-width="1.5" marker-end="url(#fsb)"/>
+      <text class="sv-ts" x="712" y="286" fill="var(--bad)">wrong zone</text>
+      <text class="sv-ts" x="712" y="302" fill="var(--bad)">or 5 s timeout</text>
+
+      <path d="M829 70 V30 H344 V182" fill="none" stroke="var(--ok)" stroke-width="1.5" marker-end="url(#fsg)"/>
+      <text class="sv-ts" x="586" y="22" text-anchor="middle" fill="var(--ok)">append 1 step, keep the prefix &mdash; sequence grows to 32</text>
+
+      <path d="M829 372 V404 H107 V260" fill="none" stroke="var(--bad)" stroke-width="1.5" marker-end="url(#fsb)"/>
+      <text class="sv-ts" x="468" y="422" text-anchor="middle" fill="var(--bad)">log the attempt, reset to 3 steps, regenerate</text>
+    </svg>
+   </div>
+   <figcaption><b>Figure 5 &middot; Game state machine</b>
+   Success feeds back into playback with the sequence one step longer; failure is the only edge that
+   returns to idle. The two evaluation states are timed animations, not decision points &mdash; the
+   verdict is already decided when they are entered.</figcaption>
+  </figure>
+</section>
+<section>
+  <h3>4.1 &nbsp;Why the debounce window is 25 ms</h3>
+  <figure>
+   <div class="svgbox">
+    <svg viewBox="0 0 880 300" role="img" aria-label="Timing diagram: the raw GPIO line chatters between high and low for a few milliseconds as the contact closes, while the debounced signal only follows once the line has held steady for 25 milliseconds.">
+      <defs><marker id="db" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor"/></marker></defs>
+      <text class="sv-ts" x="20" y="66">RAW GPIO</text>
+      <text class="sv-ts" x="20" y="176">DEBOUNCED</text>
+      <line class="sv-line" x1="130" y1="250" x2="850" y2="250" stroke-opacity=".3"/>
+
+      <polyline class="sv-line" points="130,50 300,50 300,100 316,100 316,50 330,50 330,100 350,100 350,50 364,50 364,100 840,100"/>
+      <text class="sv-ts" x="140" y="42">idle HIGH</text>
+      <text class="sv-ts" x="700" y="92">held LOW</text>
+
+      <polyline points="130,160 470,160 470,210 840,210" fill="none" stroke="var(--accent)" stroke-width="2"/>
+      <text class="sv-ta" x="700" y="202">press event fires here</text>
+
+      <line x1="364" y1="34" x2="364" y2="266" stroke="currentColor" stroke-width="1" stroke-dasharray="4 4" stroke-opacity=".5"/>
+      <line x1="470" y1="34" x2="470" y2="266" stroke="currentColor" stroke-width="1" stroke-dasharray="4 4" stroke-opacity=".5"/>
+
+      <line class="sv-line" x1="364" y1="272" x2="470" y2="272" marker-start="url(#db)" marker-end="url(#db)"/>
+      <text class="sv-t" x="417" y="292" text-anchor="middle">DEBOUNCE_MS = 25</text>
+      <text class="sv-ts" x="290" y="292" text-anchor="end">contact chatter, 1&ndash;10 ms typical</text>
+    </svg>
+   </div>
+   <figcaption><b>Figure 6 &middot; Contact bounce rejection</b>
+   Every edge on the raw line restarts the 25 ms timer; the debounced state only follows once the
+   line has been quiet for the full window. One physical press therefore produces exactly one event
+   even though three parallel switches may chatter at once.</figcaption>
+  </figure>
+
+  <p>Three switches in parallel means three sets of contacts bouncing into the same node, so the
+  window has to outlast the noisiest of them. Twenty-five milliseconds clears typical tactile-switch
+  chatter with margin while staying far below human reaction time &mdash; it costs nothing that the
+  timer would ever measure.</p>
+
+  <div class="tw">
+  <table>
+    <caption>4.2 &mdash; Timing constants and what each one governs</caption>
+    <thead><tr><th>Constant</th><th>Value</th><th>Governs</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">DEBOUNCE_MS</td><td class="mono">25 ms</td><td>Quiet time before a level change is accepted as real</td></tr>
+      <tr><td class="mono">INPUT_TIMEOUT_MS</td><td class="mono">5000 ms</td><td>Patience per press; the deadline resets after each correct one</td></tr>
+      <tr><td class="mono">SHOW_ON_MAX_MS</td><td class="mono">420 ms</td><td>Lit time per step at the base sequence length</td></tr>
+      <tr><td class="mono">SHOW_ON_MIN_MS</td><td class="mono">240 ms</td><td>Floor on lit time; playback speeds up 12 ms per added step</td></tr>
+      <tr><td class="mono">SHOW_GAP_MS</td><td class="mono">160 ms</td><td>Dark gap between steps, so a repeated zone reads as two</td></tr>
+      <tr><td class="mono">FEEDBACK_MS</td><td class="mono">170 ms</td><td>Echo of the player's own press, right or wrong</td></tr>
+      <tr><td class="mono">SUCCESS_MS</td><td class="mono">900 ms</td><td>Victory animation; the chime runs 840 ms inside it</td></tr>
+      <tr><td class="mono">FAIL_MS</td><td class="mono">1500 ms</td><td>Four red flashes over the defeat chime</td></tr>
+      <tr><td class="mono">RENDER_INTERVAL</td><td class="mono">20 ms</td><td>Ring refresh, roughly 50 fps</td></tr>
+      <tr><td class="mono">BASE_SEQ_LEN</td><td class="mono">3 steps</td><td>Where every session and every reset starts</td></tr>
+      <tr><td class="mono">MAX_SEQ_LEN</td><td class="mono">32 steps</td><td>Ceiling; past it the sequence reshuffles instead of growing</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="note"><strong>A repeated zone still reads as two presses.</strong>
+  The 160 ms dark gap between steps is what makes <span class="mono">Z3, Z3</span> distinguishable
+  from one long <span class="mono">Z3</span>. Shorten it and the game gets unfairly hard in a way
+  players will read as a bug, not as difficulty.</div>
+</section>
+<section id="s5">
+  <div class="shead"><span class="num">05</span><h2>Firmware source</h2></div>
+  <p>One sketch, no external files. The dashboard of section 6 lives inside this same source as a
+  <code>PROGMEM</code> raw string literal, so flashing the board deploys the web app with it. Save it
+  as <span class="mono">Chakravyuha_Arcade/Chakravyuha_Arcade.ino</span> &mdash; the Arduino IDE
+  requires the folder name to match the sketch.</p>
+
+  <div class="tw">
+  <table>
+    <caption>5.1 &mdash; Dependencies</caption>
+    <thead><tr><th>Library</th><th>Source</th><th>Tested against</th></tr></thead>
+    <tbody>
+      <tr><td>Adafruit NeoPixel</td><td>Library Manager</td><td class="mono">1.12.x</td></tr>
+      <tr><td>WiFi.h, WebServer.h</td><td>Bundled with the ESP32 core</td><td class="mono">core 2.x and 3.x</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="note"><strong>The LEDC audio API changed between core versions.</strong>
+  Arduino-ESP32 3.x replaced <span class="mono">ledcSetup</span> plus
+  <span class="mono">ledcAttachPin</span> with a single <span class="mono">ledcAttach(pin, freq,
+  bits)</span>, and moved tone calls from channel numbers to pin numbers. The sketch branches on
+  <span class="mono">ESP_ARDUINO_VERSION_MAJOR</span> so the same file builds on both.</div>
+
+  <div class="codehead">
+    <span class="fn">Chakravyuha_Arcade.ino</span>
+    <button type="button" data-copy="fw">Copy</button>
+  </div>
+  <pre><code id="fw">/* ============================================================================
+ *  CHAKRAVYUHA ARCADE
+ *  Pattern-recognition &amp; reaction-time game for ESP32-WROOM-32 DevKit V1
+ *
+ *  Hardware   : 24 microswitches -&gt; 8 parallel zones, 16-LED WS2812B ring,
+ *               piezo/speaker via 2N2222 low-side driver.
+ *  Networking : SoftAP "Chakravyuha-Arcade" / "123456789", dashboard on port 80.
+ *  Design     : Fully non-blocking. loop() never calls delay(); every subsystem
+ *               (audio, LEDs, debounce, FSM, HTTP) is millis()-driven so the web
+ *               server stays responsive during gameplay.
+ *
+ *  Libraries  : Adafruit NeoPixel (Library Manager), WiFi.h + WebServer.h (core).
+ *  Board core : Arduino-ESP32 2.x or 3.x — LEDC API differences are handled.
+ * ==========================================================================*/
+
+#include &lt;Arduino.h&gt;
+#include &lt;WiFi.h&gt;
+#include &lt;WebServer.h&gt;
+#include &lt;Adafruit_NeoPixel.h&gt;
+
+/* Cores older than 2.0.3 do not define the version macros. */
+#ifndef ESP_ARDUINO_VERSION_MAJOR
+  #define ESP_ARDUINO_VERSION_MAJOR 2
+#endif
+
+/* ------------------------------------------------------------------ PINOUT */
+static const uint8_t ZONE_PIN[8] = { 13, 14, 16, 17, 18, 19, 21, 22 };
+
+#define LED_PIN          4      /* WS2812B DIN, through 390R                 */
+#define NUM_LEDS         16     /* 8 zones x 2 LEDs                          */
+#define BUZZ_PIN         25     /* 2N2222 base, through 1k                   */
+#define BUZZ_CHANNEL     0      /* LEDC channel (Arduino-ESP32 2.x only)     */
+#define LED_BRIGHTNESS   70     /* 0-255. Keep low: see WIRING.md note 3.    */
+
+/* -------------------------------------------------------------- GAME TUNING */
+#define BASE_SEQ_LEN     3      /* sequence length at round 1                */
+#define MAX_SEQ_LEN      32     /* hard ceiling                              */
+#define DEBOUNCE_MS      25     /* software debounce window per zone         */
+#define INPUT_TIMEOUT_MS 5000   /* per-press patience before TIMEOUT         */
+#define SHOW_GAP_MS      160    /* dark gap between pattern steps            */
+#define SHOW_ON_MAX_MS   420    /* lit time at round 1                       */
+#define SHOW_ON_MIN_MS   240    /* lit time once the game speeds up          */
+#define FEEDBACK_MS      170    /* echo of the player's own press            */
+#define SUCCESS_MS       900    /* victory animation length                  */
+#define FAIL_MS          1500   /* defeat animation length                   */
+#define HIST_MAX         12     /* rounds kept in the dashboard log          */
+#define RENDER_INTERVAL  20     /* ring refresh, ~50 fps                     */
+
+/* --------------------------------------------------------------- IDENTITIES */
+static const uint16_t ZONE_FREQ[8] = { 262, 294, 330, 392, 440, 523, 587, 659 };
+
+static const uint8_t ZONE_RGB[8][3] = {
+  { 255,   0,  30 },   /* Z1 crimson  */
+  { 255, 110,   0 },   /* Z2 amber    */
+  { 235, 215,   0 },   /* Z3 gold     */
+  {   0, 255,  70 },   /* Z4 green    */
+  {   0, 220, 210 },   /* Z5 cyan     */
+  {   0,  95, 255 },   /* Z6 blue     */
+  { 150,   0, 255 },   /* Z7 violet   */
+  { 255,   0, 150 }    /* Z8 magenta  */
+};
+
+/* ------------------------------------------------------------- WIFI / HTTP */
+static const char* AP_SSID = "Chakravyuha-Arcade";
+static const char* AP_PASS = "123456789";
+
+WebServer        server(80);
+Adafruit_NeoPixel strip(NUM_LEDS, LED_PIN, NEO_GRB + NEO_KHZ800);
+
+/* ------------------------------------------------------------ STATE MACHINE */
+enum GameState : uint8_t {
+  ST_IDLE = 0,      /* ambient rainbow, waiting for the first press */
+  ST_SHOW,          /* replaying the pattern to the player          */
+  ST_INPUT,         /* player is repeating it, timer running        */
+  ST_SUCCESS,       /* victory chime + green sweep                  */
+  ST_FAIL           /* defeat chime + red flash                     */
+};
+
+static GameState state = ST_IDLE;
+
+/* Sequence + progress */
+static uint8_t  sequence[MAX_SEQ_LEN];
+static uint8_t  seqLen     = BASE_SEQ_LEN;
+static uint8_t  showIdx    = 0;      /* index being displayed  */
+static uint8_t  inputIdx   = 0;      /* index awaited from player */
+static uint16_t roundNo    = 1;
+
+/* Timers */
+static uint32_t stateEnteredMs = 0;
+static uint32_t stepStartMs    = 0;
+static bool     showLedOn      = false;
+static uint32_t roundStartMs   = 0;  /* start of the whole round   */
+static uint32_t lastEventMs    = 0;  /* for per-press reaction time */
+static uint32_t inputDeadline  = 0;
+static int8_t   feedbackZone   = -1;
+static uint32_t feedbackUntil  = 0;
+static uint32_t lastRenderMs   = 0;
+static uint16_t rainbowHue     = 0;
+
+/* Session statistics */
+static uint32_t lastRoundMs  = 0;
+static uint32_t bestRoundMs  = 0;
+static uint16_t highScore    = 0;    /* longest sequence cleared */
+static uint16_t roundsWon    = 0;
+static uint16_t roundsFailed = 0;
+static uint32_t zoneSumMs[8] = { 0 };
+static uint16_t zoneHits[8]  = { 0 };
+
+/* Attempt history (ring buffer, newest first when served) */
+enum ResultCode : uint8_t { RES_OK = 0, RES_WRONG = 1, RES_TIMEOUT = 2 };
+
+struct HistEntry {
+  uint16_t   rnd;
+  uint8_t    len;
+  uint8_t    reached;   /* how many steps were entered correctly */
+  uint32_t   ms;
+  ResultCode res;
+};
+
+static HistEntry hist[HIST_MAX];
+static uint8_t   histCount = 0;
+static uint8_t   histHead  = 0;
+
+/* Debounce bookkeeping */
+static bool     rawState[8]    = { false };
+static bool     stableState[8] = { false };
+static uint32_t lastEdgeMs[8]  = { 0 };
+static bool     pressEvent[8]  = { false };
+
+/* ==========================================================================
+ *  AUDIO ENGINE — non-blocking note queue on LEDC hardware PWM
+ * ========================================================================*/
+
+struct Note { uint16_t freq; uint16_t dur; };   /* freq 0 == rest */
+
+static Note     noteQueue[16];
+static uint8_t  noteCount = 0;
+static uint8_t  noteIndex = 0;
+static uint32_t noteStartMs = 0;
+static bool     audioBusy = false;
+
+static void audioBegin() {
+#if ESP_ARDUINO_VERSION_MAJOR &gt;= 3
+  ledcAttach(BUZZ_PIN, 1000, 10);
+#else
+  ledcSetup(BUZZ_CHANNEL, 1000, 10);
+  ledcAttachPin(BUZZ_PIN, BUZZ_CHANNEL);
+#endif
+}
+
+static void audioFreq(uint16_t f) {
+#if ESP_ARDUINO_VERSION_MAJOR &gt;= 3
+  if (f == 0) ledcWrite(BUZZ_PIN, 0);
+  else        ledcWriteTone(BUZZ_PIN, f);      /* sets 50% duty internally */
+#else
+  if (f == 0) ledcWrite(BUZZ_CHANNEL, 0);
+  else        ledcWriteTone(BUZZ_CHANNEL, f);
+#endif
+}
+
+/* Queue a phrase. Replaces anything still playing — the newest cue always wins. */
+static void audioPlay(const Note* notes, uint8_t count) {
+  if (count == 0) return;
+  if (count &gt; 16) count = 16;
+  for (uint8_t i = 0; i &lt; count; i++) noteQueue[i] = notes[i];
+  noteCount   = count;
+  noteIndex   = 0;
+  noteStartMs = millis();
+  audioBusy   = true;
+  audioFreq(noteQueue[0].freq);
+}
+
+static void audioTone(uint16_t freq, uint16_t dur) {
+  Note n = { freq, dur };
+  audioPlay(&amp;n, 1);
+}
+
+static void audioStop() {
+  audioBusy = false;
+  noteCount = 0;
+  audioFreq(0);
+}
+
+static void audioUpdate() {
+  if (!audioBusy) return;
+  if (millis() - noteStartMs &lt; noteQueue[noteIndex].dur) return;
+
+  noteIndex++;
+  if (noteIndex &gt;= noteCount) { audioStop(); return; }
+  noteStartMs = millis();
+  audioFreq(noteQueue[noteIndex].freq);
+}
+
+/* Fixed phrases */
+static const Note CHIME_VICTORY[] = {
+  { 523, 90 }, { 659, 90 }, { 784, 90 }, { 1047, 200 }, { 0, 60 }, { 784, 70 }, { 1047, 240 }
+};
+static const Note CHIME_DEFEAT[] = {
+  { 330, 160 }, { 262, 160 }, { 208, 200 }, { 0, 70 }, { 165, 420 }
+};
+static const Note CHIME_START[] = {
+  { 392, 80 }, { 523, 80 }, { 659, 150 }
+};
+
+/* ==========================================================================
+ *  INPUT — per-zone software debounce, falling-edge press events
+ * ========================================================================*/
+
+static void inputBegin() {
+  for (uint8_t i = 0; i &lt; 8; i++) {
+    pinMode(ZONE_PIN[i], INPUT_PULLUP);
+    rawState[i]    = false;
+    stableState[i] = false;
+    lastEdgeMs[i]  = 0;
+    pressEvent[i]  = false;
+  }
+}
+
+/* Any of the 3 parallel switches pulling the line LOW counts as "pressed". */
+static void inputUpdate() {
+  const uint32_t now = millis();
+  for (uint8_t i = 0; i &lt; 8; i++) {
+    const bool level = (digitalRead(ZONE_PIN[i]) == LOW);
+
+    if (level != rawState[i]) {          /* line moved — restart the window */
+      rawState[i]   = level;
+      lastEdgeMs[i] = now;
+    }
+    if ((now - lastEdgeMs[i]) &gt;= DEBOUNCE_MS &amp;&amp; stableState[i] != rawState[i]) {
+      stableState[i] = rawState[i];
+      if (stableState[i]) pressEvent[i] = true;   /* latch on press only */
+    }
+  }
+}
+
+/* Consume the lowest-numbered pending press, or -1 if none. */
+static int8_t inputTake() {
+  for (uint8_t i = 0; i &lt; 8; i++) {
+    if (pressEvent[i]) { pressEvent[i] = false; return (int8_t)i; }
+  }
+  return -1;
+}
+
+static void inputFlush() {
+  for (uint8_t i = 0; i &lt; 8; i++) pressEvent[i] = false;
+}
+
+/* ==========================================================================
+ *  LED RING — 2 LEDs per zone, all animations time-sliced
+ * ========================================================================*/
+
+static void ringClear() { strip.clear(); }
+
+static void ringZone(uint8_t zone, uint8_t scalePct) {
+  if (zone &gt; 7) return;
+  const uint8_t r = (uint16_t)ZONE_RGB[zone][0] * scalePct / 100;
+  const uint8_t g = (uint16_t)ZONE_RGB[zone][1] * scalePct / 100;
+  const uint8_t b = (uint16_t)ZONE_RGB[zone][2] * scalePct / 100;
+  strip.setPixelColor(zone * 2,     strip.Color(r, g, b));
+  strip.setPixelColor(zone * 2 + 1, strip.Color(r, g, b));
+}
+
+static void ringRainbow() {
+  for (uint8_t i = 0; i &lt; NUM_LEDS; i++) {
+    const uint16_t hue = rainbowHue + (uint16_t)(i * (65536L / NUM_LEDS));
+    strip.setPixelColor(i, strip.gamma32(strip.ColorHSV(hue, 255, 200)));
+  }
+  rainbowHue += 420;                 /* ~1 revolution every 3 s at 50 fps */
+}
+
+/* Dim teal read-out of how far the player has got this round. */
+static void ringProgress() {
+  for (uint8_t s = 0; s &lt; inputIdx &amp;&amp; s &lt; seqLen; s++) {
+    const uint8_t led = (uint8_t)((uint16_t)s * NUM_LEDS / seqLen);
+    strip.setPixelColor(led, strip.Color(0, 40, 45));
+  }
+}
+
+static void ringRender() {
+  const uint32_t now = millis();
+  if (now - lastRenderMs &lt; RENDER_INTERVAL) return;
+  lastRenderMs = now;
+
+  ringClear();
+
+  switch (state) {
+    case ST_IDLE:
+      ringRainbow();
+      break;
+
+    case ST_SHOW:
+      if (showLedOn &amp;&amp; showIdx &lt; seqLen) ringZone(sequence[showIdx], 100);
+      break;
+
+    case ST_INPUT:
+      if (feedbackZone &gt;= 0) ringZone((uint8_t)feedbackZone, 100);
+      else                   ringProgress();
+      break;
+
+    case ST_SUCCESS: {                       /* green comet sweep */
+      const uint32_t t   = now - stateEnteredMs;
+      const uint8_t  head = (uint8_t)((t * NUM_LEDS) / SUCCESS_MS) % NUM_LEDS;
+      for (uint8_t k = 0; k &lt; 5; k++) {
+        const uint8_t led = (head + NUM_LEDS - k) % NUM_LEDS;
+        const uint8_t v   = 255 &gt;&gt; k;
+        strip.setPixelColor(led, strip.Color(0, v, v / 4));
+      }
+      break;
+    }
+
+    case ST_FAIL: {                          /* 4 hard red flashes */
+      const uint32_t t = now - stateEnteredMs;
+      if (((t / (FAIL_MS / 8)) % 2) == 0) {
+        for (uint8_t i = 0; i &lt; NUM_LEDS; i++) strip.setPixelColor(i, strip.Color(255, 0, 0));
+      }
+      break;
+    }
+  }
+  strip.show();
+}
+
+/* ==========================================================================
+ *  GAME LOGIC — finite state machine
+ * ========================================================================*/
+
+static void histAdd(uint16_t rnd, uint8_t len, uint8_t reached,
+                    uint32_t ms, ResultCode res) {
+  hist[histHead] = { rnd, len, reached, ms, res };
+  histHead = (uint8_t)((histHead + 1) % HIST_MAX);
+  if (histCount &lt; HIST_MAX) histCount++;
+}
+
+static void statsReset() {
+  lastRoundMs = 0;
+  bestRoundMs = 0;
+  highScore   = 0;
+  roundsWon   = 0;
+  roundsFailed = 0;
+  for (uint8_t i = 0; i &lt; 8; i++) { zoneSumMs[i] = 0; zoneHits[i] = 0; }
+  histCount = 0;
+  histHead  = 0;
+}
+
+static void enterState(GameState s) {
+  state          = s;
+  stateEnteredMs = millis();
+}
+
+/* Lit time shortens as the sequence grows — the game gets harder, not just longer. */
+static uint16_t showOnMs() {
+  const uint16_t drop = (uint16_t)(seqLen - BASE_SEQ_LEN) * 12;
+  if (drop &gt;= (SHOW_ON_MAX_MS - SHOW_ON_MIN_MS)) return SHOW_ON_MIN_MS;
+  return (uint16_t)(SHOW_ON_MAX_MS - drop);
+}
+
+static void generateSequence(uint8_t len) {
+  for (uint8_t i = 0; i &lt; len &amp;&amp; i &lt; MAX_SEQ_LEN; i++) {
+    sequence[i] = (uint8_t)random(0, 8);
+  }
+}
+
+/* Lead-in silence before the first step, so an opening chime is never clipped. */
+static uint16_t showLeadMs = SHOW_GAP_MS;
+
+static void beginShow(uint16_t leadMs) {
+  showIdx     = 0;
+  showLedOn   = false;          /* start in the dark: the lead-in gap */
+  showLeadMs  = leadMs;
+  stepStartMs = millis();
+  inputFlush();
+  enterState(ST_SHOW);
+}
+
+static void beginInput() {
+  inputIdx      = 0;
+  feedbackZone  = -1;
+  roundStartMs  = millis();
+  lastEventMs   = roundStartMs;
+  inputDeadline = roundStartMs + INPUT_TIMEOUT_MS;
+  inputFlush();
+  enterState(ST_INPUT);
+}
+
+static void startGame() {
+  seqLen  = BASE_SEQ_LEN;
+  roundNo = 1;
+  generateSequence(seqLen);
+  audioPlay(CHIME_START, sizeof(CHIME_START) / sizeof(Note));
+  beginShow(420);                 /* let the 310 ms start chime finish */
+}
+
+static void roundWon() {
+  lastRoundMs = millis() - roundStartMs;
+  if (bestRoundMs == 0 || lastRoundMs &lt; bestRoundMs) bestRoundMs = lastRoundMs;
+  if (seqLen &gt; highScore) highScore = seqLen;
+  roundsWon++;
+  histAdd(roundNo, seqLen, seqLen, lastRoundMs, RES_OK);
+
+  audioPlay(CHIME_VICTORY, sizeof(CHIME_VICTORY) / sizeof(Note));
+  enterState(ST_SUCCESS);
+}
+
+static void roundLost(ResultCode why) {
+  lastRoundMs = millis() - roundStartMs;
+  roundsFailed++;
+  histAdd(roundNo, seqLen, inputIdx, lastRoundMs, why);
+
+  audioPlay(CHIME_DEFEAT, sizeof(CHIME_DEFEAT) / sizeof(Note));
+  enterState(ST_FAIL);
+}
+
+/* ---- per-state tick handlers ------------------------------------------- */
+
+static void tickIdle() {
+  if (inputTake() &gt;= 0) startGame();
+}
+
+static void tickShow() {
+  const uint32_t now = millis();
+
+  if (showLedOn) {
+    if (now - stepStartMs &gt;= showOnMs()) {   /* lit phase over */
+      showLedOn   = false;
+      stepStartMs = now;
+      showIdx++;                             /* this step is consumed */
+      audioStop();
+    }
+    return;
+  }
+
+  /* Dark phase: a long lead-in before step 0, a short gap between steps. */
+  const uint16_t wait = (showIdx == 0) ? showLeadMs : SHOW_GAP_MS;
+  if (now - stepStartMs &lt; wait) return;
+
+  if (showIdx &gt;= seqLen) { beginInput(); return; }   /* whole pattern shown */
+
+  showLedOn   = true;
+  stepStartMs = now;
+  audioTone(ZONE_FREQ[sequence[showIdx]], showOnMs());
+}
+
+static void tickInput() {
+  const uint32_t now = millis();
+
+  if (feedbackZone &gt;= 0 &amp;&amp; now &gt;= feedbackUntil) feedbackZone = -1;
+
+  if ((int32_t)(now - inputDeadline) &gt;= 0) { roundLost(RES_TIMEOUT); return; }
+
+  const int8_t z = inputTake();
+  if (z &lt; 0) return;
+
+  /* Echo the press immediately — the player must feel the button, right or wrong. */
+  feedbackZone  = z;
+  feedbackUntil = now + FEEDBACK_MS;
+  audioTone(ZONE_FREQ[z], FEEDBACK_MS);
+
+  if ((uint8_t)z != sequence[inputIdx]) { roundLost(RES_WRONG); return; }
+
+  /* Correct: bank the reaction time against that zone. */
+  const uint32_t reaction = now - lastEventMs;
+  lastEventMs   = now;
+  zoneSumMs[z] += reaction;
+  zoneHits[z]++;
+
+  inputIdx++;
+  if (inputIdx &gt;= seqLen) { roundWon(); return; }
+
+  inputDeadline = now + INPUT_TIMEOUT_MS;
+}
+
+static void tickSuccess() {
+  if (millis() - stateEnteredMs &lt; SUCCESS_MS) return;
+
+  roundNo++;
+  if (seqLen &lt; MAX_SEQ_LEN) {
+    sequence[seqLen] = (uint8_t)random(0, 8);   /* extend, keep the prefix */
+    seqLen++;
+  } else {
+    generateSequence(seqLen);                   /* ceiling: reshuffle instead */
+  }
+  beginShow(SHOW_GAP_MS * 2);
+}
+
+static void tickFail() {
+  if (millis() - stateEnteredMs &lt; FAIL_MS) return;
+
+  seqLen  = BASE_SEQ_LEN;
+  roundNo = 1;
+  generateSequence(seqLen);
+  inputIdx = 0;
+  inputFlush();
+  enterState(ST_IDLE);
+}
+
+static void gameUpdate() {
+  switch (state) {
+    case ST_IDLE:    tickIdle();    break;
+    case ST_SHOW:    tickShow();    break;
+    case ST_INPUT:   tickInput();   break;
+    case ST_SUCCESS: tickSuccess(); break;
+    case ST_FAIL:    tickFail();    break;
+  }
+}
+
+static const char* stateName() {
+  switch (state) {
+    case ST_IDLE:    return "IDLE";
+    case ST_SHOW:    return "PATTERN_SHOW";
+    case ST_INPUT:   return "USER_INPUT";
+    case ST_SUCCESS: return "EVALUATION_SUCCESS";
+    case ST_FAIL:    return "EVALUATION_FAILURE";
+  }
+  return "UNKNOWN";
+}
+
+static const char* stateLabel() {
+  switch (state) {
+    case ST_IDLE:    return "Ready";
+    case ST_SHOW:    return "Watch the pattern";
+    case ST_INPUT:   return "Your turn";
+    case ST_SUCCESS: return "Round cleared";
+    case ST_FAIL:    return "Sequence broken";
+  }
+  return "-";
+}
+
+/* ==========================================================================
+ *  EMBEDDED DASHBOARD — single-page app held in flash (PROGMEM)
+ * ========================================================================*/
+
+static const char INDEX_HTML[] PROGMEM = R"rawliteral(
+&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;meta name="viewport" content="width=device-width,initial-scale=1"&gt;
+&lt;title&gt;Chakravyuha Arcade&lt;/title&gt;
+&lt;style&gt;
+:root{
+  --bg:#07080d; --panel:#111420; --panel2:#161a2a; --line:#232838;
+  --txt:#e8ecf6; --dim:#8791a8; --accent:#00e5c0; --accent2:#7c5cff;
+  --ok:#22d67b; --warn:#ffb020; --bad:#ff4a5e;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:
+    radial-gradient(1100px 600px at 85% -10%,rgba(124,92,255,.16),transparent 60%),
+    radial-gradient(900px 500px at 5% 0%,rgba(0,229,192,.12),transparent 55%),
+    var(--bg);
+  color:var(--txt);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  min-height:100vh;padding:20px 16px 44px;
+}
+.wrap{max-width:1180px;margin:0 auto}
+header{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;margin-bottom:22px}
+.brand{display:flex;align-items:center;gap:13px}
+.logo{width:42px;height:42px;border-radius:12px;flex:none;
+  background:conic-gradient(from 220deg,var(--accent),var(--accent2),#ff4a9e,var(--accent));
+  box-shadow:0 0 26px rgba(124,92,255,.45)}
+h1{font-size:20px;letter-spacing:.34em;text-transform:uppercase;font-weight:650}
+.sub{font-size:11.5px;color:var(--dim);letter-spacing:.16em;text-transform:uppercase;margin-top:3px}
+.link{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--dim);
+  background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:8px 15px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 10px var(--ok)}
+.dot.off{background:var(--bad);box-shadow:0 0 10px var(--bad)}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(12,1fr)}
+.card{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);
+  border-radius:18px;padding:20px;box-shadow:0 18px 42px rgba(0,0,0,.42)}
+.c5{grid-column:span 5}.c7{grid-column:span 7}
+@media(max-width:900px){.c5,.c7{grid-column:span 12}}
+.card h2{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);
+  font-weight:600;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
+.pill{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:13px;
+  padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:#0d101a;color:var(--dim)}
+.pill.idle{color:var(--accent);border-color:rgba(0,229,192,.4);background:rgba(0,229,192,.09)}
+.pill.show{color:var(--accent2);border-color:rgba(124,92,255,.45);background:rgba(124,92,255,.12)}
+.pill.input{color:var(--warn);border-color:rgba(255,176,32,.42);background:rgba(255,176,32,.11)}
+.pill.ok{color:var(--ok);border-color:rgba(34,214,123,.42);background:rgba(34,214,123,.11)}
+.pill.bad{color:var(--bad);border-color:rgba(255,74,94,.45);background:rgba(255,74,94,.12)}
+.headline{font-size:30px;font-weight:660;margin:16px 0 4px;letter-spacing:-.5px}
+.headline .u{font-size:14px;color:var(--dim);font-weight:500;margin-left:6px}
+.note{font-size:12.5px;color:var(--dim);line-height:1.6}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+.stat{background:#0d101a;border:1px solid var(--line);border-radius:13px;padding:13px 14px}
+.stat .k{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+.stat .v{font-family:var(--mono);font-size:21px;margin-top:6px;font-variant-numeric:tabular-nums}
+.steps{display:flex;gap:6px;flex-wrap:wrap;margin-top:18px}
+.step{width:22px;height:7px;border-radius:4px;background:#1e2333;transition:background .12s}
+.step.done{background:var(--accent)}
+.step.cur{background:var(--warn);box-shadow:0 0 10px rgba(255,176,32,.6)}
+.zone{display:grid;grid-template-columns:14px 58px 1fr 74px 46px;gap:11px;align-items:center;
+  padding:8px 0;border-bottom:1px solid rgba(35,40,56,.6)}
+.zone:last-child{border-bottom:0}
+.zc{width:12px;height:12px;border-radius:50%}
+.zn{font-family:var(--mono);font-size:12.5px;color:var(--dim)}
+.bar{height:8px;border-radius:5px;background:#0d101a;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:5px;transition:width .3s ease}
+.zv{font-family:var(--mono);font-size:13px;text-align:right;font-variant-numeric:tabular-nums}
+.zh{font-family:var(--mono);font-size:11px;color:var(--dim);text-align:right}
+table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12.5px}
+th{text-align:left;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);
+  font-weight:600;padding:0 10px 11px;border-bottom:1px solid var(--line)}
+td{padding:10px;border-bottom:1px solid rgba(35,40,56,.55);font-variant-numeric:tabular-nums}
+tr:last-child td{border-bottom:0}
+.tag{display:inline-block;padding:2px 9px;border-radius:6px;font-size:11px}
+.tag.ok{background:rgba(34,214,123,.14);color:var(--ok)}
+.tag.bad{background:rgba(255,74,94,.14);color:var(--bad)}
+.tag.to{background:rgba(255,176,32,.14);color:var(--warn)}
+.empty{padding:26px 10px;text-align:center;color:var(--dim);font-size:13px}
+button{font:inherit;font-size:12px;color:var(--txt);background:#0d101a;border:1px solid var(--line);
+  border-radius:9px;padding:7px 14px;cursor:pointer;transition:.15s}
+button:hover{border-color:var(--accent);color:var(--accent)}
+footer{margin-top:22px;text-align:center;font-size:11.5px;color:var(--dim);font-family:var(--mono)}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="wrap"&gt;
+  &lt;header&gt;
+    &lt;div class="brand"&gt;
+      &lt;div class="logo"&gt;&lt;/div&gt;
+      &lt;div&gt;
+        &lt;h1&gt;Chakravyuha&lt;/h1&gt;
+        &lt;div class="sub"&gt;Pattern &amp;middot; Reaction &amp;middot; Telemetry&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="link"&gt;&lt;span class="dot" id="link-dot"&gt;&lt;/span&gt;&lt;span id="link-txt"&gt;connecting&lt;/span&gt;&lt;/div&gt;
+  &lt;/header&gt;
+  &lt;div class="grid"&gt;
+    &lt;section class="card c5"&gt;
+      &lt;h2&gt;Game State&lt;/h2&gt;
+      &lt;span class="pill" id="state-pill"&gt;&lt;b id="state-code"&gt;--&lt;/b&gt;&lt;/span&gt;
+      &lt;div class="headline" id="state-label"&gt;Waiting for controller&lt;/div&gt;
+      &lt;div class="note" id="state-note"&gt;Press any zone on the arcade to begin a session.&lt;/div&gt;
+      &lt;div class="stats"&gt;
+        &lt;div class="stat"&gt;&lt;div class="k"&gt;Round&lt;/div&gt;&lt;div class="v" id="v-round"&gt;--&lt;/div&gt;&lt;/div&gt;
+        &lt;div class="stat"&gt;&lt;div class="k"&gt;Seq Length&lt;/div&gt;&lt;div class="v" id="v-len"&gt;--&lt;/div&gt;&lt;/div&gt;
+        &lt;div class="stat"&gt;&lt;div class="k"&gt;Step&lt;/div&gt;&lt;div class="v" id="v-step"&gt;--&lt;/div&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="steps" id="steps"&gt;&lt;/div&gt;
+    &lt;/section&gt;
+
+    &lt;section class="card c7"&gt;
+      &lt;h2&gt;Timing &amp;amp; Score&lt;/h2&gt;
+      &lt;div class="headline"&gt;&lt;span id="v-last"&gt;--&lt;/span&gt;&lt;span class="u"&gt;ms last round&lt;/span&gt;&lt;/div&gt;
+      &lt;div class="note"&gt;Millisecond timer starts the instant the pattern finishes playing.&lt;/div&gt;
+      &lt;div class="stats"&gt;
+        &lt;div class="stat"&gt;&lt;div class="k"&gt;Best Round&lt;/div&gt;&lt;div class="v" id="v-best"&gt;--&lt;/div&gt;&lt;/div&gt;
+        &lt;div class="stat"&gt;&lt;div class="k"&gt;High Score&lt;/div&gt;&lt;div class="v" id="v-high"&gt;--&lt;/div&gt;&lt;/div&gt;
+        &lt;div class="stat"&gt;&lt;div class="k"&gt;Avg Reaction&lt;/div&gt;&lt;div class="v" id="v-avg"&gt;--&lt;/div&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="stats"&gt;
+        &lt;div class="stat"&gt;&lt;div class="k"&gt;Rounds Won&lt;/div&gt;&lt;div class="v" id="v-won"&gt;--&lt;/div&gt;&lt;/div&gt;
+        &lt;div class="stat"&gt;&lt;div class="k"&gt;Failures&lt;/div&gt;&lt;div class="v" id="v-fail"&gt;--&lt;/div&gt;&lt;/div&gt;
+        &lt;div class="stat"&gt;&lt;div class="k"&gt;Uptime&lt;/div&gt;&lt;div class="v" id="v-up"&gt;--&lt;/div&gt;&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/section&gt;
+
+    &lt;section class="card c5"&gt;
+      &lt;h2&gt;Average Reaction / Zone&lt;/h2&gt;
+      &lt;div id="zones"&gt;&lt;/div&gt;
+    &lt;/section&gt;
+
+    &lt;section class="card c7"&gt;
+      &lt;h2&gt;Attempt History&lt;button id="btn-reset" type="button"&gt;Reset session&lt;/button&gt;&lt;/h2&gt;
+      &lt;div id="hist-wrap"&gt;&lt;div class="empty"&gt;No attempts logged yet.&lt;/div&gt;&lt;/div&gt;
+    &lt;/section&gt;
+  &lt;/div&gt;
+  &lt;footer&gt;Chakravyuha Arcade &amp;middot; ESP32 SoftAP &amp;middot; &lt;span id="v-ip"&gt;192.168.4.1&lt;/span&gt;&lt;/footer&gt;
+&lt;/div&gt;
+&lt;script&gt;
+const ZC = ['#ff001e','#ff6e00','#ebd700','#00ff46','#00dcd2','#005fff','#9600ff','#ff0096'];
+const PILL = {IDLE:'idle', PATTERN_SHOW:'show', USER_INPUT:'input',
+              EVALUATION_SUCCESS:'ok', EVALUATION_FAILURE:'bad'};
+const NOTE = {
+  IDLE:'Press any zone on the arcade to begin a session.',
+  PATTERN_SHOW:'Ring is replaying the sequence. Inputs are ignored until playback ends.',
+  USER_INPUT:'Timer running. Each press must land within 5000 ms of the previous one.',
+  EVALUATION_SUCCESS:'Round cleared. Sequence extends by one zone.',
+  EVALUATION_FAILURE:'Sequence broken. Resetting to the base length and returning to idle.'
+};
+const RES = [['OK','ok'],['WRONG','bad'],['TIMEOUT','to']];
+const $ = id =&gt; document.getElementById(id);
+
+function fmt(v){ return (!v) ? '--' : v; }
+function upt(s){
+  const h=Math.floor(s/3600), m=Math.floor(s%3600/60), x=s%60;
+  return (h?h+'h ':'')+(h||m?m+'m ':'')+x+'s';
+}
+
+function drawSteps(d){
+  const box=$('steps');
+  if(box.children.length!==d.seqLen){
+    box.innerHTML='';
+    for(let i=0;i&lt;d.seqLen;i++){ const e=document.createElement('div'); e.className='step'; box.appendChild(e); }
+  }
+  const active = (d.state==='PATTERN_SHOW') ? d.showIdx
+               : (d.state==='USER_INPUT')   ? d.step : -1;
+  [...box.children].forEach((e,i)=&gt;{
+    e.className = 'step' + (i&lt;active ? ' done' : i===active ? ' cur' : '');
+  });
+}
+
+function drawZones(z){
+  const peak = Math.max(1, ...z.map(v=&gt;v.avg));
+  $('zones').innerHTML = z.map((v,i)=&gt;`
+    &lt;div class="zone"&gt;
+      &lt;span class="zc" style="background:${ZC[i]};box-shadow:0 0 9px ${ZC[i]}"&gt;&lt;/span&gt;
+      &lt;span class="zn"&gt;ZONE ${i+1}&lt;/span&gt;
+      &lt;span class="bar"&gt;&lt;i style="width:${v.avg?Math.max(4,Math.round(v.avg/peak*100)):0}%;background:${ZC[i]}"&gt;&lt;/i&gt;&lt;/span&gt;
+      &lt;span class="zv"&gt;${v.avg?v.avg+' ms':'--'}&lt;/span&gt;
+      &lt;span class="zh"&gt;${v.hits}x&lt;/span&gt;
+    &lt;/div&gt;`).join('');
+}
+
+function drawHist(h){
+  if(!h.length){ $('hist-wrap').innerHTML='&lt;div class="empty"&gt;No attempts logged yet.&lt;/div&gt;'; return; }
+  const rows = h.map(e=&gt;{
+    const r = RES[e.res] || RES[1];
+    return `&lt;tr&gt;&lt;td&gt;#${e.r}&lt;/td&gt;&lt;td&gt;${e.len}&lt;/td&gt;&lt;td&gt;${e.reached}/${e.len}&lt;/td&gt;`
+         + `&lt;td&gt;${e.ms} ms&lt;/td&gt;&lt;td&gt;&lt;span class="tag ${r[1]}"&gt;${r[0]}&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;`;
+  }).join('');
+  $('hist-wrap').innerHTML = '&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Round&lt;/th&gt;&lt;th&gt;Length&lt;/th&gt;'
+    + '&lt;th&gt;Reached&lt;/th&gt;&lt;th&gt;Time&lt;/th&gt;&lt;th&gt;Result&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;' + rows + '&lt;/tbody&gt;&lt;/table&gt;';
+}
+
+function render(d){
+  $('state-code').textContent  = d.state;
+  $('state-pill').className    = 'pill ' + (PILL[d.state]||'');
+  $('state-label').textContent = d.label;
+  $('state-note').textContent  = NOTE[d.state] || '';
+
+  $('v-round').textContent = d.round;
+  $('v-len').textContent   = d.seqLen;
+  $('v-step').textContent  = (d.state==='USER_INPUT') ? (d.step+' / '+d.seqLen) : '--';
+
+  $('v-last').textContent = fmt(d.lastMs);
+  $('v-best').textContent = d.bestMs ? d.bestMs+' ms' : '--';
+  $('v-high').textContent = fmt(d.high);
+  $('v-won').textContent  = d.won;
+  $('v-fail').textContent = d.failed;
+  $('v-up').textContent   = upt(d.uptime);
+  $('v-ip').textContent   = d.ip;
+
+  const tot = d.zones.reduce((a,z)=&gt;a+z.avg*z.hits,0);
+  const cnt = d.zones.reduce((a,z)=&gt;a+z.hits,0);
+  $('v-avg').textContent = cnt ? Math.round(tot/cnt)+' ms' : '--';
+
+  drawSteps(d); drawZones(d.zones); drawHist(d.hist);
+}
+
+function online(ok){
+  $('link-dot').className = ok ? 'dot' : 'dot off';
+  $('link-txt').textContent = ok ? 'live' : 'disconnected';
+}
+
+async function poll(){
+  try{
+    const r = await fetch('/api/state',{cache:'no-store'});
+    if(!r.ok) throw new Error('http');
+    render(await r.json());
+    online(true);
+  }catch(e){ online(false); }
+}
+
+$('btn-reset').addEventListener('click', async ()=&gt;{
+  try{ await fetch('/api/reset',{method:'POST'}); poll(); }catch(e){}
+});
+
+poll();
+setInterval(poll, 250);
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+)rawliteral";
+
+/* ==========================================================================
+ *  HTTP HANDLERS
+ * ========================================================================*/
+
+static String buildStateJson() {
+  String j;
+  j.reserve(1200);
+
+  j += "{\"state\":\"";  j += stateName();
+  j += "\",\"label\":\""; j += stateLabel();
+  j += "\",\"round\":";  j += roundNo;
+  j += ",\"seqLen\":";   j += seqLen;
+  j += ",\"step\":";     j += inputIdx;
+  j += ",\"showIdx\":";  j += showIdx;
+  j += ",\"lastMs\":";   j += lastRoundMs;
+  j += ",\"bestMs\":";   j += bestRoundMs;
+  j += ",\"high\":";     j += highScore;
+  j += ",\"won\":";      j += roundsWon;
+  j += ",\"failed\":";   j += roundsFailed;
+  j += ",\"uptime\":";   j += (millis() / 1000UL);
+  j += ",\"clients\":";  j += WiFi.softAPgetStationNum();
+  j += ",\"ip\":\"";     j += WiFi.softAPIP().toString();
+  j += "\",\"zones\":[";
+
+  for (uint8_t i = 0; i &lt; 8; i++) {
+    if (i) j += ',';
+    const uint32_t avg = zoneHits[i] ? (zoneSumMs[i] / zoneHits[i]) : 0;
+    j += "{\"avg\":"; j += avg;
+    j += ",\"hits\":"; j += zoneHits[i];
+    j += '}';
+  }
+
+  j += "],\"hist\":[";
+  for (uint8_t k = 0; k &lt; histCount; k++) {          /* newest first */
+    const uint8_t idx = (uint8_t)((histHead + HIST_MAX - 1 - k) % HIST_MAX);
+    if (k) j += ',';
+    j += "{\"r\":";        j += hist[idx].rnd;
+    j += ",\"len\":";      j += hist[idx].len;
+    j += ",\"reached\":";  j += hist[idx].reached;
+    j += ",\"ms\":";       j += hist[idx].ms;
+    j += ",\"res\":";      j += (uint8_t)hist[idx].res;
+    j += '}';
+  }
+  j += "]}";
+  return j;
+}
+
+static void handleRoot() {
+  server.sendHeader("Cache-Control", "no-store");
+  server.send_P(200, "text/html", INDEX_HTML);
+}
+
+static void handleState() {
+  server.sendHeader("Cache-Control", "no-store");
+  server.send(200, "application/json", buildStateJson());
+}
+
+static void handleReset() {
+  statsReset();
+  server.send(200, "application/json", "{\"ok\":true}");
+}
+
+static void handleNotFound() {
+  /* Captive-portal friendly: bounce every unknown path at the dashboard. */
+  server.sendHeader("Location", "/", true);
+  server.send(302, "text/plain", "");
+}
+
+/* ==========================================================================
+ *  SETUP / LOOP
+ * ========================================================================*/
+
+void setup() {
+  Serial.begin(115200);
+  delay(200);                       /* one-off, before the game starts */
+  Serial.println();
+  Serial.println(F("=== Chakravyuha Arcade booting ==="));
+
+  /* Entropy from the hardware RNG so the pattern differs every power-up. */
+  randomSeed(esp_random());
+
+  inputBegin();
+  audioBegin();
+
+  strip.begin();
+  strip.setBrightness(LED_BRIGHTNESS);
+  strip.clear();
+  strip.show();
+
+  WiFi.mode(WIFI_AP);
+  WiFi.softAP(AP_SSID, AP_PASS);
+  Serial.print(F("SoftAP  : ")); Serial.println(AP_SSID);
+  Serial.print(F("Password: ")); Serial.println(AP_PASS);
+  Serial.print(F("Open    : http://")); Serial.println(WiFi.softAPIP());
+
+  server.on("/",           HTTP_GET,  handleRoot);
+  server.on("/api/state",  HTTP_GET,  handleState);
+  server.on("/api/reset",  HTTP_POST, handleReset);
+  server.on("/api/reset",  HTTP_GET,  handleReset);   /* convenience */
+  server.onNotFound(handleNotFound);
+  server.begin();
+
+  generateSequence(seqLen);
+  enterState(ST_IDLE);
+  Serial.println(F("Ready. Press any zone to start."));
+}
+
+void loop() {
+  server.handleClient();   /* HTTP first — keeps the dashboard snappy */
+  inputUpdate();           /* debounce all 8 zones                    */
+  gameUpdate();            /* advance the FSM                         */
+  audioUpdate();           /* step the note queue                     */
+  ringRender();            /* repaint the ring at ~50 fps             */
+}
+</code></pre>
+</section>
+
+<section id="s6">
+  <div class="shead"><span class="num">06</span><h2>Dashboard &amp; API</h2></div>
+  <p>The ESP32 raises an access point rather than joining a network, so the cabinet works with no
+  infrastructure at all. Join <span class="mono">Chakravyuha-Arcade</span> with the password
+  <span class="mono">123456789</span> and open <a href="http://192.168.4.1">192.168.4.1</a> &mdash;
+  any unknown path redirects there, which makes phones offer it as a captive portal.</p>
+
+  <div class="tw">
+  <table>
+    <caption>6.1 &mdash; HTTP routes</caption>
+    <thead><tr><th>Route</th><th>Method</th><th>Returns</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">/</td><td class="mono">GET</td><td>Dashboard, <span class="mono">text/html</span></td><td>Served from flash with <span class="mono">send_P</span>, never copied to RAM</td></tr>
+      <tr><td class="mono">/api/state</td><td class="mono">GET</td><td>Live state, <span class="mono">application/json</span></td><td>Polled every 250 ms by the page</td></tr>
+      <tr><td class="mono">/api/reset</td><td class="mono">POST</td><td class="mono">{"ok":true}</td><td>Clears session stats; GET accepted for convenience</td></tr>
+      <tr><td class="mono">any other</td><td class="mono">GET</td><td class="mono">302</td><td>Redirect to <span class="mono">/</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="tw">
+  <table>
+    <caption>6.2 &mdash; /api/state response fields</caption>
+    <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">state</td><td class="mono">string</td><td>IDLE, PATTERN_SHOW, USER_INPUT, EVALUATION_SUCCESS, EVALUATION_FAILURE</td></tr>
+      <tr><td class="mono">label</td><td class="mono">string</td><td>Human-facing phrasing of the same state</td></tr>
+      <tr><td class="mono">round</td><td class="mono">int</td><td>Rounds cleared this game, plus one</td></tr>
+      <tr><td class="mono">seqLen</td><td class="mono">int</td><td>Current sequence length, 3 to 32</td></tr>
+      <tr><td class="mono">step</td><td class="mono">int</td><td>Presses banked so far this round</td></tr>
+      <tr><td class="mono">showIdx</td><td class="mono">int</td><td>Step being displayed during playback</td></tr>
+      <tr><td class="mono">lastMs</td><td class="mono">int</td><td>Completion time of the last round, milliseconds</td></tr>
+      <tr><td class="mono">bestMs</td><td class="mono">int</td><td>Fastest cleared round this session</td></tr>
+      <tr><td class="mono">high</td><td class="mono">int</td><td>Longest sequence ever cleared this session</td></tr>
+      <tr><td class="mono">won / failed</td><td class="mono">int</td><td>Round counters</td></tr>
+      <tr><td class="mono">uptime</td><td class="mono">int</td><td>Seconds since boot</td></tr>
+      <tr><td class="mono">clients</td><td class="mono">int</td><td>Stations currently associated to the AP</td></tr>
+      <tr><td class="mono">ip</td><td class="mono">string</td><td>SoftAP address, normally 192.168.4.1</td></tr>
+      <tr><td class="mono">zones[8]</td><td class="mono">array</td><td><span class="mono">{avg, hits}</span> &mdash; mean reaction time per zone and sample count</td></tr>
+      <tr><td class="mono">hist[]</td><td class="mono">array</td><td>Last 12 attempts, newest first: <span class="mono">{r, len, reached, ms, res}</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>Reaction time is banked per zone only on <em>correct</em> presses, measured from the previous
+  event rather than from the start of the round. A zone that consistently reads slow in
+  <span class="mono">zones[].avg</span> is usually telling you something physical &mdash; a stiff
+  cover or a switch that needs more travel &mdash; not something about the player.</p>
+</section>
+<section id="s7">
+  <div class="shead"><span class="num">07</span><h2>Build &amp; flash</h2></div>
+  <div class="grid2">
+    <div class="card">
+      <h3 style="margin-top:0">Bench order</h3>
+      <p>Wire and verify in this order &mdash; each step is testable before the next one can hide a
+      fault in it.</p>
+      <ol style="color:var(--ink-2);padding-left:20px;margin:0;display:flex;flex-direction:column;gap:9px;font-size:14.5px">
+        <li>Star ground first: supply, ESP32, ring, all COM buses, transistor emitter.</li>
+        <li>Ring on 5 V with the 1000 uF fitted at the ring, then GPIO4 through the 390 &Omega;.</li>
+        <li>Flash the sketch. The rainbow sweep confirms power, data and pixel order together.</li>
+        <li>One zone at a time: land its NO bus, press, watch that arc echo back.</li>
+        <li>Speaker stage last, so a wiring error there cannot mask an input fault.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Arduino IDE settings</h3>
+      <div class="tw" style="margin:0;border:0;box-shadow:none">
+      <table style="min-width:0">
+        <tbody>
+          <tr><td>Board</td><td class="mono">ESP32 Dev Module</td></tr>
+          <tr><td>Upload speed</td><td class="mono">921600</td></tr>
+          <tr><td>Flash frequency</td><td class="mono">80 MHz</td></tr>
+          <tr><td>Partition scheme</td><td class="mono">Default 4 MB</td></tr>
+          <tr><td>Core debug level</td><td class="mono">None</td></tr>
+          <tr><td>Serial monitor</td><td class="mono">115200 baud</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="note warn"><strong>Two things will damage hardware if you get them wrong.</strong>
+  Powering 16 WS2812B from the USB port instead of the 5 V supply will brown out the board mid-write
+  and can latch pixels at full white; and raising <span class="mono">LED_BRIGHTNESS</span> above 70
+  without upgrading the supply pushes the ring past what the harness was sized for. At the shipped
+  brightness, with never more than two pixels lit during play, the ring stays under about 120 mA.</div>
+</section>
+
+<section id="s8">
+  <div class="shead"><span class="num">08</span><h2>Bring-up &amp; faults</h2></div>
+  <p>Every symptom below has been traced back to a wiring cause rather than a firmware one, because
+  in this build that is nearly always where it is.</p>
+
+  <div class="tw">
+  <table>
+    <caption>8.1 &mdash; Symptom to cause</caption>
+    <thead><tr><th>Symptom</th><th>Likely cause</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr><td>Ring dark, board otherwise alive</td><td>Data line on the wrong end, or ring ground not shared</td><td>WS2812B is directional: drive <span class="mono">DIN</span>, not <span class="mono">DOUT</span>. Bond ring GND to the star point</td></tr>
+      <tr><td>First pixel right, rest random</td><td>Logic level marginal at 3.3 V into a 5 V part</td><td>Buffer with a 74AHCT125, or drop the ring supply through one 1N4001</td></tr>
+      <tr><td>Colours flicker on loud tones</td><td>Shared supply sagging on speaker current</td><td>Move the 1000 uF to the ring itself; separate the LED feed from the speaker return</td></tr>
+      <tr><td>Phantom presses with nobody touching it</td><td>Long unshielded harness picking up noise</td><td>Fit the optional 10 k&Omega; pull-up and 100 nF per zone; twist each signal with its ground return</td></tr>
+      <tr><td>One press counts as two</td><td>Debounce window shorter than the chatter</td><td>Raise <span class="mono">DEBOUNCE_MS</span> toward 40; suspect one specific switch in that cluster</td></tr>
+      <tr><td>A zone never registers</td><td>Wired COM to COM instead of NO to the GPIO</td><td>Meter it: pin to ground should read open at rest, closed on press</td></tr>
+      <tr><td>Board reboots when a zone is pressed</td><td>A zone landed on a strapping pin</td><td>Keep off GPIO 0, 2, 12, 15 &mdash; use the eight pins in table 2.1</td></tr>
+      <tr><td>No sound, ring fine</td><td>Transistor pinout reversed</td><td>2N2222 in TO-92 is E B C with the flat face toward you</td></tr>
+      <tr><td>Faint sound only</td><td>Speaker driven through too much series resistance</td><td>The 100 &Omega; is for an 8 &Omega; coil; remove it entirely for a piezo</td></tr>
+      <tr><td>AP visible, page will not load</td><td>Phone falling back to mobile data</td><td>Disable mobile data or tell the phone to stay on this network without internet</td></tr>
+      <tr><td>Dashboard reads "disconnected"</td><td>Polling outran the server during a long animation</td><td>Expected only if <span class="mono">loop()</span> was edited to block; nothing in the shipped code calls delay()</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>8.2 &nbsp;What the serial monitor prints at boot</h3>
+  <pre><code>=== Chakravyuha Arcade booting ===
+SoftAP  : Chakravyuha-Arcade
+Password: 123456789
+Open    : http://192.168.4.1
+Ready. Press any zone to start.</code></pre>
+</section>
+
+<footer>
+  <p class="mono">Chakravyuha Arcade &middot; build reference rev A &middot; ESP32-WROOM-32</p>
+  <p style="margin-top:6px">Firmware and dashboard are one file; wiring tables and diagrams above
+  describe the hardware that file expects.</p>
+</footer>
+</main>
+</div>
+
+<script>
+document.querySelectorAll("[data-copy]").forEach(function(btn){
+  btn.addEventListener("click", async function(){
+    var el = document.getElementById(btn.dataset.copy);
+    var original = "Copy";
+    try{
+      await navigator.clipboard.writeText(el.innerText);
+      btn.textContent = "Copied";
+    }catch(e){
+      var r = document.createRange();
+      r.selectNodeContents(el);
+      var s = window.getSelection();
+      s.removeAllRanges();
+      s.addRange(r);
+      btn.textContent = "Selected, press Ctrl+C";
+    }
+    setTimeout(function(){ btn.textContent = original; }, 2000);
+  });
+});
+
+var links = Array.prototype.slice.call(document.querySelectorAll(".rail a"));
+var targets = links.map(function(a){ return document.querySelector(a.getAttribute("href")); })
+                   .filter(Boolean);
+if ("IntersectionObserver" in window && targets.length){
+  var spy = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(!en.isIntersecting) return;
+      links.forEach(function(a){
+        a.classList.toggle("on", a.getAttribute("href") === "#" + en.target.id);
+      });
+    });
+  }, { rootMargin: "-15% 0px -70% 0px" });
+  targets.forEach(function(t){ spy.observe(t); });
+}
+</script>
